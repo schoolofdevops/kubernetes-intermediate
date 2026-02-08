@@ -1,10 +1,10 @@
 {
-  "label": "Section 9: Agentic K8s",
+  "label": "Module 9: Agentic K8s",
   "position": 10,
   "collapsible": true,
   "collapsed": false,
   "link": {
     "type": "generated-index",
-    "description": "Section overview"
+    "description": "Module overview"
   }
 }

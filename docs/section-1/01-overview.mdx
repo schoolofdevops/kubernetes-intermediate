@@ -36,7 +36,3 @@ Your Voting App works, but pods land on random nodes. In production, you need co
 Right now, Kubernetes picks nodes randomly. A postgres pod might land on a node with slow disk I/O. All three vote replicas could end up on the same node, which becomes a single point of failure. If that node crashes, your entire voting frontend goes down.
 
 This module teaches you to take control of the scheduler. You'll learn how to place postgres on SSD nodes, spread vote replicas across different machines, and use taints to keep general workloads off your database servers. These are the first production readiness improvements to your application.
-
-## What's Next
-
-Start with the [reading materials](./02-reading.md) to learn scheduling concepts, then apply them in the [lab](./03-lab.md).

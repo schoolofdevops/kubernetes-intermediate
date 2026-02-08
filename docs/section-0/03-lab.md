@@ -310,7 +310,7 @@ Stop the port-forward from Step 1 (Ctrl+C), then forward to the result service:
 kubectl port-forward svc/result 8081:80
 ```
 
-Open your browser to `http://localhost:8081`. You should see the results dashboard displaying the vote count for each option.
+Open your browser to `http://localhost:30100`. You should see the results dashboard displaying the vote count for each option.
 
 Congratulations! You've verified the complete end-to-end workflow: browser → vote service → Redis queue → worker processing → PostgreSQL storage → result service display.
 
@@ -416,7 +416,7 @@ Press Ctrl+C to stop watching.
 
 **Step 3: Verify self-healing**
 
-Submit another vote through the vote service (http://localhost:8080). Even though you deleted the worker, the new worker pod should process the vote normally.
+Submit another vote through the vote service (http://localhost:30000). Even though you deleted the worker, the new worker pod should process the vote normally.
 
 This demonstrates Kubernetes self-healing - controllers continuously reconcile actual state with desired state. However, notice there was a brief window (5-10 seconds) when no worker was running. Votes queued in Redis during that window had to wait. **Module 1 explores replica distribution strategies to minimize this gap.**
 
@@ -442,9 +442,9 @@ Expected: Vote service on NodePort 30000, result service on NodePort 30001, redi
 
 **3. End-to-end workflow functions**
 
-- Submit a vote at http://localhost:8080
+- Submit a vote at http://localhost:30000
 - Wait 5-10 seconds for worker to process
-- View results at http://localhost:8081
+- View results at http://localhost:30100
 - Vote count should match number of votes submitted
 
 **4. All nodes are ready**

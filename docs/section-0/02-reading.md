@@ -16,11 +16,11 @@ The Example Voting App is a five-component microservices application that demons
 
 ```mermaid
 graph TB
-    User1[User] -->|HTTP| Vote[Vote Service<br/>Python/Flask<br/>Port 8080]
+    User1[User] -->|HTTP| Vote[Vote Service<br/>Python/Flask<br/>Port 80]
     Vote -->|Queue| Redis[Redis<br/>Message Queue<br/>Port 6379]
-    Redis -->|Consume| Worker[Worker<br/>Go<br/>Background Process]
+    Redis -->|Consume| Worker[Worker<br/>.NET<br/>Background Process]
     Worker -->|Store| Postgres[PostgreSQL<br/>Database<br/>Port 5432]
-    Postgres -->|Read| Result[Result Service<br/>Node.js<br/>Port 8081]
+    Postgres -->|Read| Result[Result Service<br/>Node.js<br/>Port 80]
     Result -->|HTTP| User2[User]
 
     classDef k8sBlue fill:#326ce5,stroke:#fff,color:#fff
@@ -43,8 +43,11 @@ graph TB
 
 **Result Service (Node.js):** The results dashboard where users see voting tallies in real-time. It reads from PostgreSQL and displays aggregated counts with WebSocket support for live updates. Like the vote service, it includes health, readiness, and metrics endpoints. This service demonstrates read-heavy workload patterns - it queries the database frequently but never writes.
 
-:::info Enhanced Application
-The Example Voting App used in this course is a modernized, production-ready version built specifically for cloud-native learning. Each service includes health checks, Prometheus metrics, structured logging, and graceful shutdown handling. The source code is available at [github.com/schoolofdevops/instavote](https://github.com/schoolofdevops/instavote) - you can explore how these observability features are implemented, but for this course, you'll use pre-built container images.
+:::info Docker Images
+The Example Voting App uses battle-tested container images from the Docker Samples project. These images provide a stable foundation for learning Kubernetes concepts without worrying about application bugs. The images used are:
+- `dockersamples/examplevotingapp_vote` - Python/Flask voting interface
+- `dockersamples/examplevotingapp_result` - Node.js results dashboard
+- `dockersamples/examplevotingapp_worker` - .NET background processor
 :::
 
 ### Communication Flow

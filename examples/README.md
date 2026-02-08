@@ -44,50 +44,17 @@ These features enable the hands-on labs throughout the course, including pod sch
 
 ## Container Images
 
-The manifests in this directory reference container images from the `schoolofdevops/instavote-*` namespace:
+The manifests in this directory use battle-tested images from the Docker Samples project:
 
-- `schoolofdevops/instavote-vote:latest`
-- `schoolofdevops/instavote-result:latest`
-- `schoolofdevops/instavote-worker:latest`
+- `dockersamples/examplevotingapp_vote` - Python/Flask voting interface
+- `dockersamples/examplevotingapp_result` - Node.js results dashboard
+- `dockersamples/examplevotingapp_worker` - .NET background processor
 
-### Building Images
+These images are publicly available, well-maintained, and perfect for learning Kubernetes without worrying about application bugs.
 
-The source code for these images is available at [github.com/schoolofdevops/instavote](https://github.com/schoolofdevops/instavote).
+### Source Code
 
-To build the images yourself:
-
-```bash
-# Clone the repository
-git clone https://github.com/schoolofdevops/instavote.git
-cd instavote
-
-# Build vote service
-cd vote
-docker build -t schoolofdevops/instavote-vote:latest .
-
-# Build result service
-cd ../result
-docker build -t schoolofdevops/instavote-result:latest .
-
-# Build worker service
-cd ../worker
-docker build -t schoolofdevops/instavote-worker:latest .
-```
-
-### Using Different Image Tags
-
-You can modify the `image:` field in the deployment files to use different tags or registries:
-
-```yaml
-# Use a specific version
-image: schoolofdevops/instavote-vote:v1.0.0
-
-# Use GitHub Container Registry
-image: ghcr.io/schoolofdevops/instavote-vote:latest
-
-# Use your own registry
-image: myregistry.io/myorg/vote:custom
-```
+An enhanced version with observability features (health checks, Prometheus metrics, structured logging) is available at [github.com/sfd301/instavote](https://github.com/sfd301/instavote) for reference, but the labs use the stable dockersamples images.
 
 ## Baseline Deployments
 

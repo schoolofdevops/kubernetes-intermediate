@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <style>
+      .k8s-blue { fill: #326ce5; }
+      .k8s-white { fill: #ffffff; }
+    </style>
+  </defs>
+  <!-- Kubernetes wheel/helm shape -->
+  <circle cx="16" cy="16" r="14" class="k8s-blue"/>
+  <!-- Simple "K8s" text -->
+  <text x="16" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" class="k8s-white">K8s</text>
+</svg>

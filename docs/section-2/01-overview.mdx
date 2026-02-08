@@ -3,39 +3,35 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 2: Resource Management
+# Module 2: Autoscaling
 
 ## Overview
 
-This section explores resource requests, limits, quotas, and horizontal/vertical pod autoscaling strategies.
+Your Voting App has smart scheduling from Module 1, but every service still runs exactly one replica. What happens during a flash sale when thousands of votes pour in? Static replicas cannot handle traffic spikes. Manual scaling with `kubectl scale` is reactive, not proactive. You need autoscaling to make the app self-adjusting.
 
-### Key Concepts
+This module teaches horizontal pod autoscaling (HPA) with Metrics Server, vertical pod autoscaling (VPA) recommendations, and event-driven scaling with KEDA. You will configure vote and result services to auto-scale on CPU, then explore scaling the worker based on Redis queue depth.
 
-- Resource requests and limits (CPU, memory)
-- ResourceQuota and LimitRange policies
-- Horizontal Pod Autoscaler (HPA)
-- Vertical Pod Autoscaler (VPA)
+## What You Will Learn
 
-### Example
+- Install and verify Metrics Server in your KIND cluster
+- Configure HPA with CPU targets for vote and result services
+- Generate load and observe autoscaling in real-time
+- Understand VPA recommendations for right-sizing resource requests
+- Set up KEDA for event-driven worker scaling based on Redis queue length
 
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: resource-demo
-spec:
-  containers:
-  - name: app
-    image: nginx:1.25
-    resources:
-      requests:
-        memory: "64Mi"
-        cpu: "250m"
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
-```
+## Prerequisites
 
-## Coming Soon
+- Module 0 and Module 1 completed
+- KIND cluster running with 3 worker nodes
+- Example Voting App deployed with scheduling rules from Module 1
+- Basic understanding of resource requests and limits
 
-Full content will be added in later phases of this project.
+## Module Metadata
+
+**Difficulty:** Intermediate
+**Estimated Time:** 100 minutes
+- Reading: 15 minutes
+- Lab: 60 minutes
+- Quiz: 15 minutes
+
+Ready to make your Voting App respond dynamically to load? Continue to the reading materials.

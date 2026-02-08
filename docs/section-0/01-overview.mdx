@@ -1,9 +1,16 @@
 ---
 sidebar_position: 1
 title: Overview
+description: Introduction and Getting Started with Kubernetes intermediate concepts using the Example Voting App
 ---
 
-# Section 0: Essentials Refresh
+# Module 0: Introduction and Getting Started
+
+**Difficulty:** Intermediate
+**Estimated Time:** 90 minutes
+- 15 minutes reading
+- 60 minutes lab
+- 15 minutes quiz
 
 ## Course Learning Path
 
@@ -18,36 +25,36 @@ flowchart LR
     G --> H[Module 7: CRDs]
     H --> I[Module 8: Operators]
     I --> J[Module 9: Agentic K8s]
+
+    classDef current fill:#326ce5,stroke:#fff,color:#fff
+    class A current
 ```
 
 ## Overview
 
-This section refreshes core Kubernetes concepts and sets up KIND (Kubernetes IN Docker) for all lab exercises.
+Welcome to the Kubernetes Intermediate course. This module establishes the foundation for your production readiness journey. You'll deploy the Example Voting App - a multi-tier microservices application that will serve as your continuous learning environment throughout this course.
 
-### Key Concepts
+Think of Module 0 as setting the baseline. You'll create a local Kubernetes cluster using KIND, deploy all five components of the voting application, and verify it works end-to-end. This deployment works, but it's not production-ready. Over the next nine modules, you'll evolve this basic setup into a robust, scalable, secure production deployment.
 
-- Kubernetes cluster architecture fundamentals
-- KIND cluster creation and management
-- kubectl configuration and basic operations
-- Pod, Deployment, and Service basics review
+By the end of this module, you'll have a working multi-node Kubernetes cluster with the Example Voting App running locally. This exact setup becomes your playground for exploring advanced scheduling, autoscaling, traffic management, security policies, and more.
 
-### Example
+## What You Will Learn
 
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-pod
-  labels:
-    app: nginx
-spec:
-  containers:
-  - name: nginx
-    image: nginx:1.25
-    ports:
-    - containerPort: 80
-```
+- Set up a multi-node Kubernetes cluster using KIND (Kubernetes IN Docker)
+- Deploy a complete microservices application with five interconnected components
+- Understand the architecture and communication flow of the Example Voting App
+- Verify end-to-end application functionality across multiple services
+- Identify the gaps between "works" and "production-ready" deployments
 
-## Coming Soon
+## Prerequisites
 
-Full content will be added in later phases of this project.
+This course assumes you have completed the Kubernetes Essentials course or have equivalent knowledge. You should be comfortable with:
+
+- **Pods:** The smallest deployable units in Kubernetes
+- **Deployments:** Managing replica sets and rolling updates
+- **Services:** ClusterIP, NodePort, and LoadBalancer types
+- **kubectl:** Basic commands (apply, get, describe, logs, exec)
+- **Namespaces:** Organizing and isolating resources
+- **Labels and Selectors:** Identifying and grouping resources
+
+If any of these concepts feel unfamiliar, we recommend reviewing the Kubernetes Essentials course before proceeding. This intermediate course builds directly on that foundation.

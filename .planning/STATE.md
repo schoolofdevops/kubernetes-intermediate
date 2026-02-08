@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-08)
 ## Current Position
 
 Phase: 3 of 5 (Core Content - Sections 0-4)
-Plan: 3 of 5
-Status: In progress
-Last activity: 2026-02-08 — Completed 03-03-PLAN.md (Module 2: Autoscaling)
+Plan: 5 of 5
+Status: Phase complete
+Last activity: 2026-02-08 — Completed 03-05-PLAN.md (Module 4: Service Mesh)
 
-Progress: [██████░░░░] 60%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 6 minutes
-- Total execution time: 0.7 hours
+- Total plans completed: 10
+- Average duration: 7 minutes
+- Total execution time: 1.2 hours
 
 **By Phase:**
 
@@ -29,12 +29,13 @@ Progress: [██████░░░░] 60%
 |-------|-------|-------|----------|
 | 01 Platform Foundation | 2/2 | 22 min | 11 min |
 | 02 Content Infrastructure | 2/2 | 13 min | 7 min |
-| 03 Core Content (0-4) | 2/5 | 12 min | 6 min |
+| 03 Core Content (0-4) | 5/5 | 33 min | 7 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (5 min), 02-02 (8 min), 03-01 (6 min), 03-03 (6 min)
-- Trend: Content creation plans extremely consistent at 6 minutes with established templates
-- Phase 3 progress: 2 of 5 modules complete, maintaining 6-minute average
+- Last 5 plans: 03-01 (6 min), 03-02 (6 min), 03-03 (6 min), 03-04 (8 min), 03-05 (7 min)
+- Trend: Phase 3 complete - all 5 modules delivered in 33 minutes total
+- Average per module: 7 minutes (reading + lab + quiz + examples)
+- Phase 3 marked the completion of Modules 0-4
 
 *Updated after each plan completion*
 
@@ -58,6 +59,9 @@ Recent decisions affecting current work:
 - D008 (03-03): Include KEDA for event-driven scaling to demonstrate queue-based autoscaling
 - D009 (03-03): Add resource requests to vote/result in lab setup (required for HPA to function)
 - D010 (03-03): End 0-1-2 build-up sequence - cleanup autoscaling resources but keep cluster
+- D011 (03-05): Evaluation-focused lab for Module 4 (decision document as deliverable, not running mesh)
+- D012 (03-05): Linkerd for optional hands-on (simpler than Istio, 5-minute install vs 30+ minutes)
+- D013 (03-05): Service count threshold of 10+ microservices in decision framework
 
 ### Pending Todos
 
@@ -70,6 +74,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Completed 03-03-PLAN.md (Module 2: Autoscaling) — HPA, VPA, KEDA content with 3 Mermaid diagrams, comprehensive 60-minute lab, and 13-question quiz
-Next action: Continue Phase 3 with 03-04-PLAN.md (Module 3: Gateway API)
-Resume file: .planning/phases/03-core-content/03-04-PLAN.md
+Stopped at: Completed 03-05-PLAN.md (Module 4: Service Mesh) — Decision-focused module with framework, Istio vs Linkerd comparison, evaluation lab, and 12-question quiz. Phase 3 complete.
+Next action: Begin Phase 4 with 04-01-PLAN.md (Module 5 content creation)
+Resume file: .planning/phases/04-core-content-advanced/04-01-PLAN.md

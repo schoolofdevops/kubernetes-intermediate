@@ -16,11 +16,11 @@ The Example Voting App is a five-component microservices application that demons
 
 ```mermaid
 graph TB
-    User1[User] -->|HTTP| Vote[Vote Service<br/>Python/Flask<br/>Port 80]
+    User1[User] -->|HTTP| Vote[Vote Service<br/>Python/Flask<br/>Port 8080]
     Vote -->|Queue| Redis[Redis<br/>Message Queue<br/>Port 6379]
-    Redis -->|Consume| Worker[Worker<br/>.NET Core<br/>Background Process]
+    Redis -->|Consume| Worker[Worker<br/>Go<br/>Background Process]
     Worker -->|Store| Postgres[PostgreSQL<br/>Database<br/>Port 5432]
-    Postgres -->|Read| Result[Result Service<br/>Node.js<br/>Port 80]
+    Postgres -->|Read| Result[Result Service<br/>Node.js<br/>Port 8081]
     Result -->|HTTP| User2[User]
 
     classDef k8sBlue fill:#326ce5,stroke:#fff,color:#fff
@@ -33,15 +33,19 @@ graph TB
 
 ### Component Roles
 
-**Vote Service (Python/Flask):** The frontend where users cast their votes. It's a web application that presents two options and captures user selections. When you vote, the service doesn't directly save to a database - instead, it pushes the vote onto a Redis queue for asynchronous processing. This decoupling allows the frontend to respond quickly regardless of backend load.
+**Vote Service (Python/Flask):** The frontend where users cast their votes. It's a web application that presents two options and captures user selections. When you vote, the service doesn't directly save to a database - instead, it pushes the vote onto a Redis queue for asynchronous processing. This decoupling allows the frontend to respond quickly regardless of backend load. The service includes health check endpoints (`/health`, `/ready`) and Prometheus metrics (`/metrics`) that we'll use in later modules for scheduling and autoscaling.
 
 **Redis (Message Queue):** Acts as a buffer between vote submission and processing. Votes pile up in the queue when traffic is high, and the worker processes them at its own pace. This pattern (producer-consumer with a queue) is fundamental to building resilient microservices. If the worker crashes, votes stay in Redis until it recovers.
 
-**Worker (.NET Core):** A background process that continuously monitors the Redis queue. When it finds a vote, it pulls it from Redis, processes it (validation, transformation), and writes it to PostgreSQL. The worker has no HTTP interface - it's a pure background processor. This separation of concerns is key to scalable architecture.
+**Worker (Go):** A background process that continuously monitors the Redis queue. When it finds a vote, it pulls it from Redis, processes it (validation, transformation), and writes it to PostgreSQL. The worker exposes health and metrics endpoints on port 8081 for observability, but has no user-facing interface - it's a pure background processor. This separation of concerns is key to scalable architecture.
 
 **PostgreSQL (Database):** Persistent storage for all processed votes. Once the worker writes a vote here, it's permanently recorded. The database is configured with default credentials for simplicity (not production-ready - we'll address security in Module 5).
 
-**Result Service (Node.js):** The results dashboard where users see voting tallies in real-time. It reads from PostgreSQL and displays aggregated counts. This service demonstrates read-heavy workload patterns - it queries the database frequently but never writes.
+**Result Service (Node.js):** The results dashboard where users see voting tallies in real-time. It reads from PostgreSQL and displays aggregated counts with WebSocket support for live updates. Like the vote service, it includes health, readiness, and metrics endpoints. This service demonstrates read-heavy workload patterns - it queries the database frequently but never writes.
+
+:::info Enhanced Application
+The Example Voting App used in this course is a modernized, production-ready version built specifically for cloud-native learning. Each service includes health checks, Prometheus metrics, structured logging, and graceful shutdown handling. The source code is available at [github.com/schoolofdevops/instavote](https://github.com/schoolofdevops/instavote) - you can explore how these observability features are implemented, but for this course, you'll use pre-built container images.
+:::
 
 ### Communication Flow
 

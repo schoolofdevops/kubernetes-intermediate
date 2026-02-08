@@ -16,7 +16,20 @@ spec:
     spec:
       containers:
       - name: result
-        image: schoolofdevops/result
+        image: schoolofdevops/instavote-result:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8081
           name: http
+        env:
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: postgres
+        - name: LOG_LEVEL
+          value: info

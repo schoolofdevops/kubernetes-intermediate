@@ -1,0 +1,13 @@
+{
+  "mode": "yolo",
+  "depth": "quick",
+  "parallelization": true,
+  "commit_docs": false,
+  "model_profile": "balanced",
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true
+  },
+  "verification_notes": "Verification means actually running labs following lab instructions on KIND clusters"
+}

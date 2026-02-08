@@ -248,7 +248,7 @@ Now that all components are deployed, test the complete data flow: vote submissi
 The vote service is exposed as a NodePort on port 30000. In KIND, you can access NodePort services through Docker port mapping.
 
 ```bash
-kubectl port-forward svc/vote 8080:8080
+kubectl port-forward svc/vote 8080:80
 ```
 
 Leave this terminal running and open a new terminal for subsequent commands.
@@ -313,7 +313,7 @@ Your vote is now permanently stored in the database.
 Stop the port-forward from Step 1 (Ctrl+C), then forward to the result service:
 
 ```bash
-kubectl port-forward svc/result 8081:8081
+kubectl port-forward svc/result 8081:80
 ```
 
 Open your browser to `http://localhost:8081`. You should see the results dashboard displaying the vote count for each option.

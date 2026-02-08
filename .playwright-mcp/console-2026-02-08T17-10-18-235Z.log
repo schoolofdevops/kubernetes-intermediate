@@ -1,0 +1,14 @@
+[     294ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:30001/favicon.ico:0
+[  104854ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FIy3:0
+[  106854ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FJRU:0
+[  111081ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FKTS:0
+[  116090ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FLhl:0
+[  121109ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FMw6:0
+[  126121ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FO8R:0
+[  131134ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FPMk:0
+[  136148ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FQb3:0
+[  141175ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FRpb:0
+[  146192ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FT1z:0
+[  166220ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FUGO:0
+[  186271ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-FZ9S:0
+[  206292ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:30001/socket.io/?EIO=4&transport=polling&t=Pm-Fe2c:0

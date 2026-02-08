@@ -16,14 +16,7 @@ spec:
     spec:
       containers:
       - name: vote
-        image: schoolofdevops/instavote-vote:latest
+        image: dockersamples/examplevotingapp_vote
         ports:
-        - containerPort: 8080
+        - containerPort: 80
           name: http
-        env:
-        - name: REDIS_HOST
-          value: redis
-        - name: REDIS_PORT
-          value: "6379"
-        - name: LOG_LEVEL
-          value: info

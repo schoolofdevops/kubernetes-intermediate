@@ -59,9 +59,13 @@ Recent decisions affecting current work:
 - D008 (03-03): Include KEDA for event-driven scaling to demonstrate queue-based autoscaling
 - D009 (03-03): Add resource requests to vote/result in lab setup (required for HPA to function)
 - D010 (03-03): End 0-1-2 build-up sequence - cleanup autoscaling resources but keep cluster
-- D011 (03-05): Evaluation-focused lab for Module 4 (decision document as deliverable, not running mesh)
-- D012 (03-05): Linkerd for optional hands-on (simpler than Istio, 5-minute install vs 30+ minutes)
-- D013 (03-05): Service count threshold of 10+ microservices in decision framework
+- D011 (03-04): Use Contour as Gateway controller (simplest for learning, well-documented)
+- D012 (03-04): Module 3 starts with fresh Voting App deployment (not carry-forward from Module 2)
+- D013 (03-04): Include traffic splitting for canary deployments (advanced pattern, high learning value)
+- D014 (03-04): Add cross-namespace ReferenceGrant challenge (addresses common pitfall)
+- D015 (03-05): Evaluation-focused lab for Module 4 (decision document as deliverable, not running mesh)
+- D016 (03-05): Linkerd for optional hands-on (simpler than Istio, 5-minute install vs 30+ minutes)
+- D017 (03-05): Service count threshold of 10+ microservices in decision framework
 
 ### Pending Todos
 

@@ -81,7 +81,7 @@ const config: Config = {
       logo: {
         alt: 'Kubernetes Logo',
         src: 'img/logo.svg',
-        href: '/intro',
+        href: '/',
         target: '_self',
       },
       items: [
@@ -106,7 +106,7 @@ const config: Config = {
           items: [
             {
               label: 'Getting Started',
-              to: '/intro',
+              to: '/',
             },
           ],
         },

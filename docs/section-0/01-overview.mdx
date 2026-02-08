@@ -1,0 +1,38 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Section 0: Essentials Refresh
+
+## Overview
+
+This section refreshes core Kubernetes concepts and sets up KIND (Kubernetes IN Docker) for all lab exercises.
+
+### Key Concepts
+
+- Kubernetes cluster architecture fundamentals
+- KIND cluster creation and management
+- kubectl configuration and basic operations
+- Pod, Deployment, and Service basics review
+
+### Example
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.25
+    ports:
+    - containerPort: 80
+```
+
+## Coming Soon
+
+Full content will be added in later phases of this project.

@@ -1,0 +1,39 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Section 4: Service Mesh
+
+## Overview
+
+This section helps you understand when to adopt a service mesh, comparing solutions like Istio, Linkerd, and Cilium.
+
+### Key Concepts
+
+- Service mesh architecture and use cases
+- When to use (and when NOT to use) a service mesh
+- Traffic management and observability features
+- Comparison of major service mesh solutions
+
+### Example
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vote-app
+  annotations:
+    sidecar.istio.io/inject: "true"
+    traffic.sidecar.istio.io/includeInboundPorts: "80,443"
+spec:
+  containers:
+  - name: vote
+    image: schoolofdevops/vote:v1
+    ports:
+    - containerPort: 80
+```
+
+## Coming Soon
+
+Full content will be added in later phases of this project.

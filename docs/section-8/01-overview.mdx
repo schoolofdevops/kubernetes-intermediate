@@ -1,0 +1,40 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Section 8: Operators
+
+## Overview
+
+This section teaches how to build Kubernetes operators to automate application management using the Operator pattern and frameworks.
+
+### Key Concepts
+
+- Operator pattern and reconciliation loop
+- Controller-runtime and Kubebuilder framework
+- Custom controllers for CRDs
+- Operator lifecycle management
+
+### Example
+
+```go
+// Reconcile handles VotingApp resource reconciliation
+func (r *VotingAppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+    log := log.FromContext(ctx)
+
+    var votingApp examplev1.VotingApp
+    if err := r.Get(ctx, req.NamespacedName, &votingApp); err != nil {
+        return ctrl.Result{}, client.IgnoreNotFound(err)
+    }
+
+    // Reconciliation logic here
+    log.Info("Reconciling VotingApp", "name", votingApp.Name)
+
+    return ctrl.Result{}, nil
+}
+```
+
+## Coming Soon
+
+Full content will be added in later phases of this project.

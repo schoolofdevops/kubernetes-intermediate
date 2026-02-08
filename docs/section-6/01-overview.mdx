@@ -1,0 +1,45 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Section 6: Helm
+
+## Overview
+
+This section teaches Helm package management for deploying and managing complex Kubernetes applications with templating and versioning.
+
+### Key Concepts
+
+- Helm architecture (charts, values, templates)
+- Creating custom Helm charts
+- Chart dependencies and subcharts
+- Helm release lifecycle management
+
+### Example
+
+```yaml
+# values.yaml
+replicaCount: 3
+
+image:
+  repository: schoolofdevops/vote
+  tag: v1
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 128Mi
+  requests:
+    cpu: 250m
+    memory: 64Mi
+```
+
+## Coming Soon
+
+Full content will be added in later phases of this project.

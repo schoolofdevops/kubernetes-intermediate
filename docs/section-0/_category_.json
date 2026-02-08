@@ -1,0 +1,10 @@
+{
+  "label": "Section 0: Essentials Refresh",
+  "position": 1,
+  "collapsible": true,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "description": "Section overview"
+  }
+}

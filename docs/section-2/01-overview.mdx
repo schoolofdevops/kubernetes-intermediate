@@ -1,0 +1,41 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Section 2: Resource Management
+
+## Overview
+
+This section explores resource requests, limits, quotas, and horizontal/vertical pod autoscaling strategies.
+
+### Key Concepts
+
+- Resource requests and limits (CPU, memory)
+- ResourceQuota and LimitRange policies
+- Horizontal Pod Autoscaler (HPA)
+- Vertical Pod Autoscaler (VPA)
+
+### Example
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: resource-demo
+spec:
+  containers:
+  - name: app
+    image: nginx:1.25
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+```
+
+## Coming Soon
+
+Full content will be added in later phases of this project.

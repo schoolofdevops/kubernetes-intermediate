@@ -1,0 +1,45 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Section 1: Pod Scheduling
+
+## Overview
+
+This section covers advanced pod scheduling techniques including node selectors, affinity/anti-affinity, taints, and tolerations.
+
+### Key Concepts
+
+- Node selectors and labels
+- Node affinity and anti-affinity rules
+- Pod affinity and anti-affinity
+- Taints and tolerations for node isolation
+
+### Example
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: scheduled-pod
+spec:
+  nodeSelector:
+    disktype: ssd
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - node-1
+  containers:
+  - name: nginx
+    image: nginx:1.25
+```
+
+## Coming Soon
+
+Full content will be added in later phases of this project.

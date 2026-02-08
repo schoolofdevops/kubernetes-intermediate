@@ -1,0 +1,45 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Section 9: Agentic Kubernetes
+
+## Overview
+
+This section explores agentic patterns in Kubernetes, introducing AI-powered cluster management using Model Context Protocol (MCP).
+
+### Key Concepts
+
+- Agentic AI patterns in infrastructure automation
+- Model Context Protocol (MCP) for Kubernetes
+- AI-assisted cluster operations and troubleshooting
+- Building Kubernetes MCP tools and servers
+
+### Example
+
+```yaml
+# MCP tool configuration for Kubernetes operations
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcp-k8s-tools
+data:
+  tools.yaml: |
+    tools:
+      - name: kubectl-query
+        description: Query Kubernetes resources
+        parameters:
+          resource: string
+          namespace: string
+      - name: kubectl-apply
+        description: Apply Kubernetes manifests
+        parameters:
+          manifest: string
+      - name: cluster-health
+        description: Check cluster health status
+```
+
+## Coming Soon
+
+Full content will be added in later phases of this project.

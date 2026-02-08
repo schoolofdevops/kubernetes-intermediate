@@ -1,0 +1,45 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Section 5: Security
+
+## Overview
+
+This section focuses on security practices for application teams, covering NetworkPolicies, PodSecurityStandards, and RBAC.
+
+### Key Concepts
+
+- NetworkPolicies for pod-to-pod communication control
+- Pod Security Standards (restricted, baseline, privileged)
+- RBAC for application access control
+- Secrets management best practices
+
+### Example
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: vote-app-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: vote
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - protocol: TCP
+      port: 80
+```
+
+## Coming Soon
+
+Full content will be added in later phases of this project.

@@ -3,43 +3,40 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 1: Pod Scheduling
+# Module 1: Advanced Pod Scheduling
+
+## Module Information
+
+**Difficulty:** Intermediate
+**Estimated Time:** 90 minutes (15 min reading + 60 min lab + 15 min quiz)
+
+## What You Will Learn
+
+By completing this module, you will:
+
+- **Master node affinity** for placing workloads on specific nodes based on hardware or location requirements
+- **Implement pod anti-affinity** to spread replicas across nodes for high availability
+- **Configure taints and tolerations** to dedicate nodes for specific workloads
+- **Combine scheduling strategies** to achieve precise pod placement in production environments
+- **Apply scheduling to the Voting App** to optimize database performance and frontend availability
+
+## Prerequisites
+
+Before starting this module, you should have:
+
+- Completed **Module 0: Introduction and Getting Started**
+- A running **KIND cluster** with 3 worker nodes
+- The **Example Voting App** deployed and functional
+- Basic understanding of Kubernetes Deployments and Pods
 
 ## Overview
 
-This section covers advanced pod scheduling techniques including node selectors, affinity/anti-affinity, taints, and tolerations.
+Your Voting App works, but pods land on random nodes. In production, you need control over where pods run. Databases should sit on fast storage, frontends need to spread across nodes for availability, and critical workloads may require dedicated hardware.
 
-### Key Concepts
+Right now, Kubernetes picks nodes randomly. A postgres pod might land on a node with slow disk I/O. All three vote replicas could end up on the same node, which becomes a single point of failure. If that node crashes, your entire voting frontend goes down.
 
-- Node selectors and labels
-- Node affinity and anti-affinity rules
-- Pod affinity and anti-affinity
-- Taints and tolerations for node isolation
+This module teaches you to take control of the scheduler. You'll learn how to place postgres on SSD nodes, spread vote replicas across different machines, and use taints to keep general workloads off your database servers. These are the first production readiness improvements to your application.
 
-### Example
+## What's Next
 
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: scheduled-pod
-spec:
-  nodeSelector:
-    disktype: ssd
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-            - node-1
-  containers:
-  - name: nginx
-    image: nginx:1.25
-```
-
-## Coming Soon
-
-Full content will be added in later phases of this project.
+Start with the [reading materials](./02-reading.md) to learn scheduling concepts, then apply them in the [lab](./03-lab.md).

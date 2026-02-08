@@ -3,37 +3,36 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 4: Service Mesh
+# Module 4: Service Mesh
 
 ## Overview
 
-This section helps you understand when to adopt a service mesh, comparing solutions like Istio, Linkerd, and Cilium.
+You've added scheduling, autoscaling, and Gateway API to the Voting App. The next question isn't "how to add a service mesh" - it is "SHOULD you add one?" This module builds your decision-making muscle.
 
-### Key Concepts
+Service mesh is a crossroads decision in production readiness. Many teams adopt it prematurely, adding complexity without benefit. Others add it too late, missing observability and security gaps. This module teaches you when a service mesh adds value versus when it adds unnecessary overhead.
 
-- Service mesh architecture and use cases
-- When to use (and when NOT to use) a service mesh
-- Traffic management and observability features
-- Comparison of major service mesh solutions
+## What You Will Learn
 
-### Example
+- What service mesh provides (mTLS, observability, traffic management)
+- When to adopt a service mesh based on your architecture and team
+- Istio vs Linkerd comparison with tradeoffs for each
+- Decision framework for mesh adoption with evaluation criteria
+- Optional hands-on with Linkerd to see mesh behavior in action
 
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: vote-app
-  annotations:
-    sidecar.istio.io/inject: "true"
-    traffic.sidecar.istio.io/includeInboundPorts: "80,443"
-spec:
-  containers:
-  - name: vote
-    image: schoolofdevops/vote:v1
-    ports:
-    - containerPort: 80
-```
+## Metadata
 
-## Coming Soon
+- **Difficulty:** Intermediate-Advanced
+- **Estimated Time:** 80 minutes
+  - Reading: 15 minutes
+  - Lab: 50 minutes (evaluation exercise with optional hands-on)
+  - Quiz: 15 minutes
 
-Full content will be added in later phases of this project.
+## Prerequisites
+
+- **Modules 0-3 completed** (conceptual understanding of Voting App architecture)
+- **kubectl and kind installed** (already have KIND cluster running)
+- **This module is evaluation-focused** rather than implementation-focused - you'll build decision-making skills
+
+## Next Steps
+
+Start with the reading materials to understand service mesh concepts and the decision framework, then apply your knowledge in the lab evaluation exercise.

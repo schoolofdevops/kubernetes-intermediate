@@ -245,17 +245,11 @@ Now that all components are deployed, test the complete data flow: vote submissi
 
 **Step 1: Access the Vote service**
 
-The vote service is exposed as a NodePort on port 30000. In KIND, you can access NodePort services through Docker port mapping.
-
-```bash
-kubectl port-forward svc/vote 8080:80
-```
-
-Leave this terminal running and open a new terminal for subsequent commands.
+The vote service is exposed as a NodePort on port 30000. With the KIND cluster configuration using `extraPortMappings`, you can access the service directly from your host machine.
 
 **Step 2: Submit a vote**
 
-Open your browser to `http://localhost:8080`. You should see the voting interface with two options (typically Cats vs Dogs). Click one option to cast a vote.
+Open your browser to `http://localhost:30000`. You should see the voting interface with two options (Cats vs Dogs). Click one option to cast a vote.
 
 You should see a confirmation message or the interface updating to show your vote was recorded.
 

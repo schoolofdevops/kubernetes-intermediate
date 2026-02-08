@@ -34,6 +34,12 @@ const config: Config = {
     locales: ['en'],
   },
 
+  themes: ['@docusaurus/theme-mermaid'],
+
+  markdown: {
+    mermaid: true,
+  },
+
   presets: [
     [
       'classic',
@@ -75,6 +81,9 @@ const config: Config = {
       defaultMode: 'light',
       disableSwitch: false,
       respectPrefersColorScheme: true,
+    },
+    mermaid: {
+      theme: { light: 'neutral', dark: 'dark' },
     },
     navbar: {
       title: 'SFD301',

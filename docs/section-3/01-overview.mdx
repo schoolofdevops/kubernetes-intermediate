@@ -3,41 +3,43 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 3: Gateway API
+# Module 3: Gateway API
+
+## Module Metadata
+
+- **Difficulty:** Intermediate
+- **Estimated Time:** 95 minutes
+  - Reading: 15 minutes
+  - Lab: 55 minutes
+  - Quiz: 15 minutes
+
+## What You Will Learn
+
+In this module, you will:
+
+- Understand the Gateway API resource model (GatewayClass, Gateway, HTTPRoute)
+- Install and configure a Gateway controller (Contour) in your cluster
+- Create HTTPRoutes to route traffic to the Voting App services
+- Implement path-based and header-based routing patterns
+- Learn Ingress to Gateway API migration concepts
+
+## Prerequisites
+
+Before starting this module, you should have:
+
+- Completed Module 0 (Introduction and Getting Started)
+- A running KIND cluster with kubectl configured
+- Basic understanding of Kubernetes Services and networking
+- The kind and kubectl CLI tools installed
+
+:::note[Fresh Start]
+This module starts with a fresh Voting App deployment. You don't need to carry forward resources from Module 2. We'll redeploy the base application to focus on Gateway API routing concepts.
+:::
 
 ## Overview
 
-This section introduces the Kubernetes Gateway API as the next-generation ingress solution with advanced traffic routing.
+So far, you've been accessing the Voting App through NodePort services and port-forwarding. While these approaches work for local development, production applications need proper HTTP routing - path-based routing, host-based routing, header matching, and traffic splitting.
 
-### Key Concepts
+Gateway API is Kubernetes' modern answer to traffic management. It replaces the older Ingress API with a more expressive, role-oriented resource model that separates concerns between infrastructure providers, cluster operators, and application developers.
 
-- Gateway API vs Ingress comparison
-- HTTPRoute and routing rules
-- Traffic splitting and canary deployments
-- Gateway controllers and implementations
-
-### Example
-
-```yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: vote-route
-spec:
-  parentRefs:
-  - name: main-gateway
-  hostnames:
-  - "vote.example.com"
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: vote-service
-      port: 80
-```
-
-## Coming Soon
-
-Full content will be added in later phases of this project.
+In this module, you'll install a Gateway controller (Contour), create Gateway and HTTPRoute resources, implement sophisticated routing rules for the Voting App, and explore traffic splitting patterns for canary deployments. By the end, you'll understand why Gateway API is the future of Kubernetes traffic management.

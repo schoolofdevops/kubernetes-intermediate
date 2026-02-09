@@ -92,10 +92,14 @@ Plans:
   5. Section 9 (Agentic Kubernetes) is complete with all components working
   6. All labs (Sections 5-9) are verified working on actual KIND clusters
   7. Example Voting App narrative arc completes with production-grade deployment patterns
-**Plans**: TBD
+**Plans:** 5 plans in 2 waves
 
 Plans:
-- [ ] 04-01: TBD during phase planning
+- [ ] 04-01-PLAN.md — Module 5: Security (NetworkPolicy with Calico CNI, PSA, RBAC, Secrets management)
+- [ ] 04-02-PLAN.md — Module 6: Writing Helm Charts (progressive chart creation, dependencies, lifecycle hooks)
+- [ ] 04-03-PLAN.md — Module 7: Extending Kubernetes with CRDs (VoteConfig CRD with schema validation)
+- [ ] 04-04-PLAN.md — Module 8: Building Kubernetes Operators (VoteConfig operator with Kubebuilder, School of DevOps sequence)
+- [ ] 04-05-PLAN.md — Module 9: Intro to Agentic Kubernetes (MCP server, AI-assisted troubleshooting)
 
 ### Phase 5: Progress & Documentation
 **Goal**: Learners see their progress tracked across sessions and course is published with complete documentation
@@ -138,7 +142,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → (optional: 6)
 | 1. Platform Foundation | 2/2 | ✅ Complete | 2026-02-08 |
 | 2. Content Infrastructure | 2/2 | ✅ Complete | 2026-02-08 |
 | 3. Core Content (Sections 0-4) | 5/5 | ✅ TESTED & VERIFIED | 2026-02-09 |
-| 4. Advanced Content (Sections 5-9) | 0/TBD | **Next Phase** | - |
+| 4. Advanced Content (Sections 5-9) | 0/5 | **Next Phase** | - |
 | 5. Progress & Documentation | 0/TBD | Not started | - |
 | 6. Automated Lab Validation | 0/TBD | Deferred (v2) | - |
 
@@ -146,4 +150,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → (optional: 6)
 
 ---
 *Roadmap created: 2026-02-08*
-*Last updated: 2026-02-09 — Phase 3 tested & verified on actual cluster*
+*Last updated: 2026-02-09 — Phase 4 planned: 5 plans in 2 waves*

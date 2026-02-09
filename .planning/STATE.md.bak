@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-08)
 ## Current Position
 
 Phase: 4 of 5 (Advanced Content - Modules 5-9)
-Plan: 5 of 5
-Status: 5 of 5 plans complete (PHASE COMPLETE)
-Last activity: 2026-02-09 — Completed 04-04-PLAN.md (Module 8: Building Kubernetes Operators)
+Plan: 2 of 5
+Status: In progress
+Last activity: 2026-02-09 — Completed 04-02-PLAN.md (Module 6: Writing Helm Charts)
 
-Progress: [██████████] 100%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: 10 minutes
-- Total execution time: 2.5 hours
+- Total plans completed: 11
+- Average duration: 8 minutes
+- Total execution time: 1.4 hours
 
 **By Phase:**
 
@@ -30,13 +30,13 @@ Progress: [██████████] 100%
 | 01 Platform Foundation | 2/2 | 22 min | 11 min |
 | 02 Content Infrastructure | 2/2 | 13 min | 7 min |
 | 03 Core Content (0-4) | 5/5 | 33 min | 7 min |
-| 04 Advanced Content (5-9) | 5/5 | 91 min | 18 min |
+| 04 Advanced Content (5-9) | 2/5 | 15 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (19 min), 04-02 (13 min), 04-03 (27 min), 04-05 (24 min), 04-04 (8 min)
-- Trend: Phase 4 COMPLETE - All 5 modules delivered
-- Phase 4 average: 18 min/plan (efficient despite comprehensive content)
-- Module 8 delivered: 3061-word reading (3 diagrams), 1270-line operator lab with Kubebuilder, 15-question quiz
+- Last 5 plans: 03-02 (6 min), 03-03 (6 min), 03-04 (8 min), 03-05 (7 min), 04-02 (15 min)
+- Trend: Phase 4 started - Module 6 (Helm) delivered in 15 minutes
+- Phase 4 modules may take longer (advanced topics with more complexity)
+- Module 6: 2619-word reading, 1089-line lab, 13-question quiz
 
 *Updated after each plan completion*
 
@@ -73,11 +73,11 @@ Recent decisions affecting current work:
 - D021 (Validation): Convert Module 4 from theoretical evaluation to hands-on Linkerd quest
 - D022 (Validation): Keep Linkerd lightweight (Viz only, no Grafana/Jaeger for local learning)
 - D023 (Validation): Test EVERY lab instruction on actual cluster before considering module complete
-- D024 (04-01): Calico CNI for NetworkPolicy enforcement (KIND default Flannel doesn't enforce policies)
-- D025 (04-01): DNS allowlist as critical pattern (default-deny breaks service discovery without it)
-- D026 (04-01): PSA baseline enforcement with restricted audit/warn (balance security and compatibility)
-- D027 (04-01): Secret volume mounts over environment variables (not visible in kubectl describe)
-- D028 (04-01): Fresh KIND cluster for Module 5 (simpler than adding Calico to existing cluster)
+- D024 (04-02): Helm 3 with Helm 4 awareness (core concepts identical, OCI differences noted)
+- D025 (04-02): Progressive chart building (single component → full umbrella chart)
+- D026 (04-02): Exact dependency version locking (18.19.4 not 18.x for reproducibility)
+- D027 (04-02): Anti-pattern documentation (over-templatization warnings)
+- D028 (04-02): Bitnami dependency pattern (reuse community charts, not custom manifests)
 
 ### Pending Todos
 
@@ -110,51 +110,6 @@ All 5 modules tested on actual KIND cluster (3-node: 1 control-plane + 2 workers
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 04-04 (Module 8: Building Kubernetes Operators) - Complete operator workflow with Kubebuilder, reconciliation loops, finalizers
-Next action: Phase 4 COMPLETE - All advanced content modules (5-9) delivered
-Resume file: N/A (milestone ready for next phase)
-Note: Phase 4 complete - Security, Helm, CRDs, Operators, Agentic Kubernetes all delivered
-
-**Plan 04-04 complete** — VoteConfig operator with Kubebuilder: reconciliation loop, finalizers, controller-runtime patterns (3061-word reading, 1270-line lab, 15 questions) — 2026-02-09T12:27:36Z
-
-
----
-
-## Phase 4 Execution Complete - 2026-02-09T12:45:00Z
-
-**Wave 1 (4 parallel plans):**
-- Plan 04-01 (Module 5: Security) - COMPLETE in 19 min
-- Plan 04-02 (Module 6: Helm) - COMPLETE in 15 min
-- Plan 04-03 (Module 7: CRDs) - COMPLETE in 16 min
-- Plan 04-05 (Module 9: Agentic K8s) - COMPLETE in 24 min
-
-**Wave 2 (1 plan):**
-- Plan 04-04 (Module 8: Operators) - COMPLETE in 8 min
-
-**Total execution time:** ~82 minutes for 5 modules
-
-**Deliverables:**
-- 20 files created (5 modules × 4 files: overview, reading, lab, quiz)
-- 13,295 total words in reading materials (avg 2,659 words per module)
-- 5,255 total lines in labs (avg 1,051 lines per module)
-- 66 quiz questions across 5 modules
-- 16 Mermaid diagrams visualizing concepts
-
-**Verification Status:** 6/7 success criteria met
-- ✓ Module 5 (Security) content complete
-- ✓ Module 6 (Helm) content complete
-- ✓ Module 7 (CRDs) content complete
-- ✓ Module 8 (Operators) content complete
-- ✓ Module 9 (Agentic K8s) content complete
-- ✗ Labs not yet tested on actual KIND clusters (per D023)
-- ✓ Voting App narrative arc complete
-
-**Key Decisions:**
-- D024-D028: Module 5 security stack decisions
-- D029-D030: VoteConfig CRD learning progression
-- D032-D034: Module 8 operator implementation approach
-
-**Next Steps:**
-- Lab validation session required (test all 5 modules on actual cluster)
-- Based on Phase 3 experience, budget 3-4 hours for validation
-- After validation complete, Phase 4 can be marked fully complete
+Stopped at: Completed 04-02 (Module 6: Writing Helm Charts) - Reading, lab, and quiz delivered
+Next action: Continue Phase 4 with remaining modules (5, 7, 8, 9) or validate Module 6 lab
+Resume file: .planning/phases/04-advanced-content/04-03-PLAN.md

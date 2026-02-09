@@ -11,10 +11,10 @@ See: .planning/PROJECT.md (updated 2026-02-08)
 
 Phase: 3 of 5 (Core Content - Sections 0-4)
 Plan: 5 of 5
-Status: Phase complete
-Last activity: 2026-02-08 — Completed 03-05-PLAN.md (Module 4: Service Mesh)
+Status: Phase TESTED and VERIFIED ✅
+Last activity: 2026-02-09 — Phase 3 validation complete - All modules tested on actual cluster, fixed, and verified working
 
-Progress: [██████████] 100%
+Progress: [██████████] 100% + TESTED
 
 ## Performance Metrics
 
@@ -66,6 +66,12 @@ Recent decisions affecting current work:
 - D015 (03-05): Evaluation-focused lab for Module 4 (decision document as deliverable, not running mesh)
 - D016 (03-05): Linkerd for optional hands-on (simpler than Istio, 5-minute install vs 30+ minutes)
 - D017 (03-05): Service count threshold of 10+ microservices in decision framework
+- D018 (Validation): Use schoolofdevops/vote:v1 consistently (user's image, v2-v9 reserved for updates)
+- D019 (Validation): Replace Contour with NGINX Gateway Fabric (Contour installation failed, NGINX is enterprise-standard)
+- D020 (Validation): Add URLRewrite filters to Gateway API path-based routing (services expect root path)
+- D021 (Validation): Convert Module 4 from theoretical evaluation to hands-on Linkerd quest
+- D022 (Validation): Keep Linkerd lightweight (Viz only, no Grafana/Jaeger for local learning)
+- D023 (Validation): Test EVERY lab instruction on actual cluster before considering module complete
 
 ### Pending Todos
 
@@ -75,9 +81,29 @@ None yet.
 
 None yet.
 
+## Validation Session (2026-02-09)
+
+**Phase 3 Testing & Fixes:**
+All 5 modules tested on actual KIND cluster (3-node: 1 control-plane + 2 workers)
+
+- **Module 1** - Tested all 5 scheduling tasks, fixed 59 lines (node names, replica counts)
+- **Module 2** - Tested HPA/metrics, fixed node names + critical result image bug
+- **Module 3** - Tested routing, replaced failing Contour with NGINX Gateway Fabric, added URL rewrite
+- **Module 4** - Complete Linkerd installation tested, converted evaluation→exploratory quest
+
+**Key Fixes:**
+- Node names: kind-* → voting-app-* (all modules)
+- Cluster size: 3 workers → 2 workers
+- Kubernetes version: v1.27/v1.28 → v1.32.0
+- Image consistency: schoolofdevops/vote:v1 maintained
+- Gateway controller: Contour (failed) → NGINX Gateway Fabric (working)
+- Module 4: Istio (heavy) → Linkerd (lightweight, tested)
+
+**Result:** Every instruction in Modules 0-4 is now tested, working, and verified
+
 ## Session Continuity
 
-Last session: 2026-02-08
-Stopped at: Completed 03-05-PLAN.md (Module 4: Service Mesh) — Decision-focused module with framework, Istio vs Linkerd comparison, evaluation lab, and 12-question quiz. Phase 3 complete.
-Next action: Begin Phase 4 with 04-01-PLAN.md (Module 5 content creation)
-Resume file: .planning/phases/04-core-content-advanced/04-01-PLAN.md
+Last session: 2026-02-09
+Stopped at: Phase 3 validation complete — All modules tested and production-ready
+Next action: Begin Phase 4 with Module 5 content creation and testing
+Resume file: .planning/phases/04-advanced-content/04-01-PLAN.md

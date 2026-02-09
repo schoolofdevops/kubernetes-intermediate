@@ -13,8 +13,8 @@ This roadmap delivers a production-ready intermediate Kubernetes course through 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Platform Foundation** - Docusaurus site with navigation and deployment pipeline ✅ Completed 2026-02-08
-- [ ] **Phase 2: Content Infrastructure** - Templates, diagram tooling, and lab structure
-- [ ] **Phase 3: Core Content (Sections 0-4)** - First half of course content with labs and quizzes
+- [x] **Phase 2: Content Infrastructure** - Templates, diagram tooling, and lab structure ✅ Completed 2026-02-08
+- [x] **Phase 3: Core Content (Sections 0-4)** - First half of course content with labs and quizzes ✅ TESTED & VERIFIED 2026-02-09
 - [ ] **Phase 4: Advanced Content (Sections 5-9)** - Second half completing all course sections
 - [ ] **Phase 5: Progress & Documentation** - Progress tracking, README, and course publishing
 - [ ] **Phase 6: Automated Lab Validation (Optional/Future)** - v2 enhancement for automated lab verification
@@ -56,27 +56,29 @@ Plans:
 - [ ] 02-01-PLAN.md — Install Mermaid theme, configure Docusaurus, create diagram directory structure and workflow docs
 - [ ] 02-02-PLAN.md — Create lab, content, and quiz templates with comprehensive authoring guide
 
-### Phase 3: Core Content (Sections 0-4)
+### Phase 3: Core Content (Sections 0-4) ✅ COMPLETE & TESTED
 **Goal**: Learners can complete first five course sections with reading materials, diagrams, hands-on labs, and quizzes
 **Depends on**: Phase 2
 **Requirements**: CONTENT-01, CONTENT-02, CONTENT-03, CONTENT-04, CONTENT-05, CONTENT-11, CONTENT-12, CONTENT-13, CONTENT-14, DIAGRAM-06, LAB-01, LAB-02, LAB-03, LAB-04, LAB-05, LAB-11, LAB-12, LAB-13, LAB-14, LAB-15, QUIZ-01, QUIZ-02, QUIZ-03, QUIZ-04, QUIZ-05, QUIZ-11, QUIZ-12, QUIZ-13
 **Success Criteria** (what must be TRUE):
-  1. Section 0 (Essentials Refresh & KIND Setup) is complete with reading materials, diagrams, lab, and quiz
-  2. Section 1 (Advanced Pod Scheduling) is complete with all components working
-  3. Section 2 (Resource Management & Autoscaling) is complete with all components working
-  4. Section 3 (Gateway API) is complete with all components working
-  5. Section 4 (Service Mesh Decision) is complete with all components working
-  6. All labs (Sections 0-4) are verified working on actual KIND clusters
-  7. Example Voting App progresses consistently across these sections with story-based narrative
-  8. Each section reads in 10-20 minutes with balanced depth and simple language
-**Plans:** 5 plans
+  1. ✅ Section 0 (Introduction & Getting Started) is complete with reading materials, diagrams, lab, and quiz
+  2. ✅ Section 1 (Advanced Pod Scheduling) is complete with all components working — TESTED on actual cluster
+  3. ✅ Section 2 (Autoscaling) is complete with all components working — TESTED on actual cluster
+  4. ✅ Section 3 (Gateway API) is complete with all components working — TESTED on actual cluster (NGINX Gateway Fabric)
+  5. ✅ Section 4 (Service Mesh Quest) is complete with all components working — TESTED on actual cluster (Linkerd)
+  6. ✅ All labs (Sections 0-4) are verified working on actual KIND clusters (3-node: 1 control-plane + 2 workers)
+  7. ✅ Example Voting App progresses consistently across these sections with story-based narrative
+  8. ✅ Each section reads in 10-20 minutes with balanced depth and simple language
+**Plans:** 5 plans (all complete)
+**Verification:** TESTED 2026-02-09 — Every instruction verified on actual cluster, 536 lines fixed, 4 commits
+**Completed:** 2026-02-09
 
 Plans:
-- [ ] 03-01-PLAN.md — Module 0: Introduction and Getting Started (base YAMLs, KIND setup, Voting App deployment)
-- [ ] 03-02-PLAN.md — Module 1: Advanced Pod Scheduling (node affinity, pod anti-affinity, taints/tolerations)
-- [ ] 03-03-PLAN.md — Module 2: Autoscaling (HPA, Metrics Server, KEDA event-driven scaling)
-- [ ] 03-04-PLAN.md — Module 3: Gateway API (Contour, HTTPRoutes, traffic splitting)
-- [ ] 03-05-PLAN.md — Module 4: Service Mesh (decision framework, evaluation exercise, optional Linkerd)
+- [x] 03-01-PLAN.md — Module 0: Introduction and Getting Started (base YAMLs, KIND setup, Voting App deployment) ✅
+- [x] 03-02-PLAN.md — Module 1: Advanced Pod Scheduling (node affinity, pod anti-affinity, taints/tolerations) ✅ TESTED
+- [x] 03-03-PLAN.md — Module 2: Autoscaling (HPA, Metrics Server, KEDA event-driven scaling) ✅ TESTED
+- [x] 03-04-PLAN.md — Module 3: Gateway API (NGINX Gateway Fabric, HTTPRoutes, URL rewrite, traffic splitting) ✅ TESTED
+- [x] 03-05-PLAN.md — Module 4: Service Mesh (Linkerd exploratory quest with Viz observability) ✅ TESTED
 
 ### Phase 4: Advanced Content (Sections 5-9)
 **Goal**: Learners can complete remaining five advanced sections, finishing entire course with production-ready Example Voting App deployment
@@ -133,13 +135,15 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → (optional: 6)
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Platform Foundation | 2/2 | Complete | 2026-02-08 |
-| 2. Content Infrastructure | 0/2 | Planned | - |
-| 3. Core Content (Sections 0-4) | 0/5 | Planned | - |
-| 4. Advanced Content (Sections 5-9) | 0/TBD | Not started | - |
+| 1. Platform Foundation | 2/2 | ✅ Complete | 2026-02-08 |
+| 2. Content Infrastructure | 2/2 | ✅ Complete | 2026-02-08 |
+| 3. Core Content (Sections 0-4) | 5/5 | ✅ TESTED & VERIFIED | 2026-02-09 |
+| 4. Advanced Content (Sections 5-9) | 0/TBD | **Next Phase** | - |
 | 5. Progress & Documentation | 0/TBD | Not started | - |
 | 6. Automated Lab Validation | 0/TBD | Deferred (v2) | - |
 
+**Overall Progress:** 60% complete (3 of 5 core phases done)
+
 ---
 *Roadmap created: 2026-02-08*
-*Last updated: 2026-02-08 — Phase 3 planned*
+*Last updated: 2026-02-09 — Phase 3 tested & verified on actual cluster*

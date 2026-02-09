@@ -4,7 +4,7 @@
 
 By the end of this lab, you will be able to:
 
-- Install Contour as a Gateway API controller in your Kubernetes cluster
+- Install NGINX Gateway Fabric as a Gateway API controller in your Kubernetes cluster
 - Create a Gateway resource with an HTTP listener
 - Configure HTTPRoutes to route traffic to the Voting App vote and result services
 - Implement path-based routing to serve multiple services from a single Gateway
@@ -99,7 +99,7 @@ vote         ClusterIP   10.96.x.x       <none>        80/TCP     30s
 Gateway API requires custom resource definitions (CRDs) to be installed:
 
 ```bash
-kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
 ```
 
 Expected output:
@@ -129,47 +129,50 @@ Your cluster is now ready for Gateway API resources.
 
 ## Tasks
 
-### Task 1: Install Contour Gateway Controller
+### Task 1: Install NGINX Gateway Fabric
 
-Contour is a lightweight Gateway API controller that's perfect for learning. Let's install it and verify it creates a GatewayClass.
+NGINX Gateway Fabric is the enterprise-standard Gateway API implementation from NGINX. It's widely used in production environments and provides excellent performance and reliability.
 
-**Step 1: Install Contour using the quickstart YAML**
+**Step 1: Install NGINX Gateway Fabric CRDs**
 
 ```bash
-kubectl apply -f https://projectcontour.io/quickstart/contour-gateway.yaml
+kubectl apply -f https://raw.githubusercontent.com/nginxinc/nginx-gateway-fabric/v1.4.0/deploy/crds.yaml
 ```
 
-This installs Contour in the `projectcontour` namespace with all necessary components.
-
-**Step 2: Wait for Contour to be ready**
+**Step 2: Install NGINX Gateway Fabric**
 
 ```bash
-kubectl wait --for=condition=available --timeout=300s deployment -n projectcontour contour
+kubectl apply -f https://raw.githubusercontent.com/nginxinc/nginx-gateway-fabric/v1.4.0/deploy/default/deploy.yaml
 ```
 
-Expected output:
+This installs NGINX Gateway Fabric in the `nginx-gateway` namespace with all necessary components, including an automatically created GatewayClass.
+
+**Step 3: Wait for NGINX Gateway to be ready**
 
 ```bash
-deployment.apps/contour condition met
-```
-
-**Step 3: Verify the Contour components are running**
-
-```bash
-kubectl get pods -n projectcontour
+kubectl wait --for=condition=available --timeout=300s deployment/nginx-gateway -n nginx-gateway
 ```
 
 Expected output:
 
 ```bash
-NAME                       READY   STATUS    RESTARTS   AGE
-contour-xxxxxxxxxx-xxxxx   1/1     Running   0          2m
-contour-xxxxxxxxxx-xxxxx   1/1     Running   0          2m
-envoy-xxxxx                1/1     Running   0          2m
-envoy-xxxxx                1/1     Running   0          2m
+deployment.apps/nginx-gateway condition met
 ```
 
-**Step 4: Verify the GatewayClass was created**
+**Step 4: Verify NGINX Gateway components are running**
+
+```bash
+kubectl get pods -n nginx-gateway
+```
+
+Expected output:
+
+```bash
+NAME                             READY   STATUS    RESTARTS   AGE
+nginx-gateway-xxxxxxxxxx-xxxxx   2/2     Running   0          2m
+```
+
+**Step 5: Verify the GatewayClass was created**
 
 ```bash
 kubectl get gatewayclass
@@ -178,11 +181,11 @@ kubectl get gatewayclass
 Expected output:
 
 ```bash
-NAME      CONTROLLER                             ACCEPTED   AGE
-contour   projectcontour.io/gateway-controller   True       2m
+NAME    CONTROLLER                                   ACCEPTED   AGE
+nginx   gateway.nginx.org/nginx-gateway-controller   True       2m
 ```
 
-**Explanation:** Contour registers a GatewayClass named `contour`. This tells Kubernetes that Contour is available to process Gateway resources. The `ACCEPTED: True` status means Contour is ready to handle Gateways.
+**Explanation:** NGINX Gateway Fabric automatically registers a GatewayClass named `nginx`. This tells Kubernetes that NGINX is available to process Gateway resources. The `ACCEPTED: True` status means NGINX Gateway is ready to handle Gateways.
 
 ### Task 2: Create a Gateway
 
@@ -199,7 +202,7 @@ metadata:
   name: voting-app-gateway
   namespace: default
 spec:
-  gatewayClassName: contour
+  gatewayClassName: nginx
   listeners:
   - name: http
     protocol: HTTP
@@ -231,7 +234,7 @@ Expected output:
 
 ```bash
 NAME                  CLASS     ADDRESS        PROGRAMMED   AGE
-voting-app-gateway    contour   10.96.x.x      True         30s
+voting-app-gateway    nginx   10.96.x.x      True         30s
 ```
 
 **Step 4: Check the Gateway details**
@@ -250,7 +253,7 @@ Conditions:
   Programmed         True    Programmed
 ```
 
-**Explanation:** As a cluster operator, you've defined that HTTP traffic on port 80 is accepted by this Gateway. Application developers can now create HTTPRoutes to route their specific application traffic. The Gateway has been programmed into Contour's Envoy proxies and is ready to route traffic.
+**Explanation:** As a cluster operator, you've defined that HTTP traffic on port 80 is accepted by this Gateway. Application developers can now create HTTPRoutes to route their specific application traffic. The Gateway has been programmed into NGINX Gateway Fabric and is ready to route traffic.
 
 ### Task 3: Create HTTPRoutes for Vote and Result
 
@@ -350,7 +353,7 @@ Both `Accepted: True` and `ResolvedRefs: True` mean the route successfully attac
 First, get the Envoy service address. In KIND, we'll use port-forwarding:
 
 ```bash
-kubectl port-forward -n projectcontour svc/envoy 8080:80
+kubectl port-forward -n nginx-gateway svc/nginx-gateway 8080:80
 ```
 
 Leave this running in one terminal, and in another terminal, test with curl:
@@ -395,6 +398,12 @@ spec:
     - path:
         type: PathPrefix
         value: /vote
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
     backendRefs:
     - name: vote
       port: 80
@@ -402,6 +411,12 @@ spec:
     - path:
         type: PathPrefix
         value: /result
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
     backendRefs:
     - name: result
       port: 80
@@ -427,7 +442,7 @@ Check that both `Accepted` and `ResolvedRefs` are `True`.
 With your port-forward still running (or restart it):
 
 ```bash
-kubectl port-forward -n projectcontour svc/envoy 8080:80
+kubectl port-forward -n nginx-gateway svc/nginx-gateway 8080:80
 ```
 
 Test both paths:
@@ -440,11 +455,14 @@ curl http://localhost:8080/vote
 curl http://localhost:8080/result
 ```
 
-**Understanding path matching:**
+**Understanding path matching and URL rewrite:**
 
 - **PathPrefix** matches any path that starts with the specified value
 - `/vote` matches `/vote`, `/vote/`, `/vote/anything`
 - `/result` matches `/result`, `/result/`, `/result/data`
+- **URLRewrite filter** is critical here - it strips the path prefix (`/vote` → `/`) before forwarding to the backend
+- Without URL rewrite, the vote service would receive requests to `/vote` which it doesn't understand (it expects `/`)
+- The `ReplacePrefixMatch` type replaces the matched prefix with the specified value (in our case, `/`)
 
 For exact matches, you would use `type: Exact` which only matches the exact path specified (no trailing content).
 
@@ -546,6 +564,12 @@ spec:
     - path:
         type: PathPrefix
         value: /vote
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
     backendRefs:
     - name: vote
       port: 80
@@ -557,6 +581,12 @@ spec:
     - path:
         type: PathPrefix
         value: /result
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
     backendRefs:
     - name: result
       port: 80
@@ -715,10 +745,10 @@ Now you should see `Accepted: True`.
 
 Confirm your lab setup is working correctly:
 
-**1. Check Contour is running**
+**1. Check NGINX Gateway Fabric is running**
 
 ```bash
-kubectl get pods -n projectcontour
+kubectl get pods -n nginx-gateway
 ```
 
 All pods should show `STATUS: Running`.
@@ -757,7 +787,7 @@ Should show `Accepted: True` and `ResolvedRefs: True`.
 
 ```bash
 # Port-forward if not already running
-kubectl port-forward -n projectcontour svc/envoy 8080:80 &
+kubectl port-forward -n nginx-gateway svc/nginx-gateway 8080:80 &
 
 # Test vote service
 curl -s http://localhost:8080/vote | grep -i vote
@@ -817,8 +847,9 @@ kubectl delete referencegrant -n default allow-team-b
 # Delete team-b namespace
 kubectl delete namespace team-b
 
-# Optionally, uninstall Contour
-kubectl delete -f https://projectcontour.io/quickstart/contour-gateway.yaml
+# Optionally, uninstall NGINX Gateway Fabric
+kubectl delete namespace nginx-gateway
+kubectl delete gatewayclass nginx
 
 # Optionally, clean up Voting App
 kubectl delete -f examples/voting-app/
@@ -873,9 +904,9 @@ kubectl get httproute <name> -o yaml | grep -A 5 backendRefs
 # If referencing cross-namespace service, ensure ReferenceGrant allows it
 ```
 
-### Issue: Contour envoy service has no external IP in KIND
+### Issue: NGINX Gateway service has no external IP in KIND
 
-**Symptom:** `kubectl get svc -n projectcontour envoy` shows `<pending>` for EXTERNAL-IP.
+**Symptom:** `kubectl get svc -n nginx-gateway nginx-gateway` shows `<pending>` for EXTERNAL-IP.
 
 **Cause:** KIND doesn't provide LoadBalancer services by default - this is expected behavior in local clusters.
 
@@ -884,7 +915,7 @@ kubectl get httproute <name> -o yaml | grep -A 5 backendRefs
 Use port-forwarding instead:
 
 ```bash
-kubectl port-forward -n projectcontour svc/envoy 8080:80
+kubectl port-forward -n nginx-gateway svc/nginx-gateway 8080:80
 ```
 
 Then access via `http://localhost:8080`.
@@ -900,8 +931,8 @@ For production clusters (AWS, GCP, Azure), the LoadBalancer service type will pr
 **Solution:**
 
 ```bash
-# Check Contour pods are running
-kubectl get pods -n projectcontour
+# Check NGINX Gateway pods are running
+kubectl get pods -n nginx-gateway
 
 # Check Gateway references correct GatewayClass
 kubectl get gateway <name> -o yaml | grep gatewayClassName
@@ -909,8 +940,8 @@ kubectl get gateway <name> -o yaml | grep gatewayClassName
 # Check GatewayClass exists and is accepted
 kubectl get gatewayclass
 
-# Check Contour logs for errors
-kubectl logs -n projectcontour deployment/contour
+# Check NGINX Gateway logs for errors
+kubectl logs -n nginx-gateway deployment/nginx-gateway
 ```
 
 ### Issue: curl returns "404 Not Found"
@@ -942,4 +973,4 @@ curl http://localhost:8080/vote
 
 - **Traffic splitting enables safe deployments** - Weighted backend references make canary deployments and blue-green migrations straightforward. Start with 90/10, monitor, gradually shift traffic.
 
-- **Gateway API is portable** - Your HTTPRoutes and Gateways work with any compliant controller. Contour today, NGINX tomorrow, Istio in production - the core configs stay the same.
+- **Gateway API is portable** - Your HTTPRoutes and Gateways work with any compliant controller. NGINX Gateway Fabric today, Envoy Gateway tomorrow, Istio in production - the core configs stay the same.

@@ -3,43 +3,41 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 9: Agentic Kubernetes
+# Module 9: Intro to Agentic Kubernetes
+
+**Difficulty:** Intermediate
+
+**Estimated Time:** 70 minutes (15 min reading + 45 min lab + 10 min quiz)
+
+## What You Will Learn
+
+By completing this module, you will understand:
+
+- What agentic AI means for Kubernetes operations and how it differs from traditional automation
+- Model Context Protocol (MCP) as the standardized interface for connecting AI models to Kubernetes tools
+- AI-assisted troubleshooting and diagnostics workflows for cluster operations
+- Human-in-the-loop safety patterns for AI-powered infrastructure management
+- The future of Kubernetes operations and the emerging agentic ecosystem
+
+## Prerequisites
+
+- KIND cluster running with Voting App deployed
+- kubectl CLI installed and configured
+- kubectl-ai CLI (multiple installation options provided in lab)
+- An MCP-compatible AI client (Claude Desktop, Cursor, VS Code, or similar) - optional
+
+:::note Exploratory Module
+This module is EXPLORATORY. kubectl-ai can be used interactively via CLI even without an MCP client, and the reading materials and quiz remain valuable for conceptual understanding. The hands-on experience is valuable across all usage modes.
+:::
 
 ## Overview
 
-This section explores agentic patterns in Kubernetes, introducing AI-powered cluster management using Model Context Protocol (MCP).
+Throughout this course, you have been the operator. You deployed the Voting App, scaled it, secured it, charted it, and extended it manually. You made every decision: which nodes to schedule pods on, how many replicas to run, what network policies to apply, when to restart failing containers.
 
-### Key Concepts
+But what if an AI agent could help? Not replace you, but assist: diagnosing issues faster than you can read logs, suggesting fixes based on patterns it has seen across thousands of clusters, explaining what went wrong in plain language. This is Agentic Kubernetes - AI that works WITH you, not instead of you.
 
-- Agentic AI patterns in infrastructure automation
-- Model Context Protocol (MCP) for Kubernetes
-- AI-assisted cluster operations and troubleshooting
-- Building Kubernetes MCP tools and servers
+This module introduces the emerging field of AI-assisted Kubernetes operations. You will learn how Model Context Protocol enables AI models to interact with your cluster safely, try AI-powered troubleshooting on deliberately broken deployments, and develop the safety awareness needed to use these tools responsibly.
 
-### Example
-
-```yaml
-# MCP tool configuration for Kubernetes operations
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mcp-k8s-tools
-data:
-  tools.yaml: |
-    tools:
-      - name: kubectl-query
-        description: Query Kubernetes resources
-        parameters:
-          resource: string
-          namespace: string
-      - name: kubectl-apply
-        description: Apply Kubernetes manifests
-        parameters:
-          manifest: string
-      - name: cluster-health
-        description: Check cluster health status
-```
-
-## Coming Soon
-
-Full content will be added in later phases of this project.
+:::caution Emerging Technology
+This module introduces an emerging technology. MCP implementations are evolving rapidly. Some tools may have changed since this content was written. The concepts and safety principles are durable; the specific tools may need updating.
+:::

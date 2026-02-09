@@ -3,43 +3,42 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 5: Security
+# Module 5: Security (NetworkPolicy, PSA, RBAC)
+
+## Metadata
+
+- **Difficulty:** Intermediate
+- **Estimated Time:** 100 minutes
+  - Reading: 20 minutes
+  - Lab: 60 minutes
+  - Quiz: 15 minutes
+
+## What You Will Learn
+
+By completing this module, you will:
+
+- Implement NetworkPolicy to control pod-to-pod communication at the network level
+- Apply Pod Security Admission to enforce security baselines and prevent privilege escalation
+- Configure RBAC with ServiceAccounts for least-privilege application access
+- Move credentials from environment variables to Kubernetes Secrets with volume mounts
+- Apply defense-in-depth security strategy across multiple layers
+
+## Prerequisites
+
+- KIND and kubectl installed on your machine
+- Familiarity with the Example Voting App architecture from Modules 0-4
+- Basic understanding of Kubernetes networking concepts
+
+:::caution[Fresh Cluster Required]
+This module creates a NEW KIND cluster with Calico CNI. NetworkPolicy enforcement requires a CNI plugin that supports it. KIND's default Flannel CNI does not enforce NetworkPolicies.
+:::
 
 ## Overview
 
-This section focuses on security practices for application teams, covering NetworkPolicies, PodSecurityStandards, and RBAC.
+Your Voting App works. It scales under load. Traffic routes correctly through the Gateway API. But from a security perspective, it's wide open.
 
-### Key Concepts
+Right now, any pod can talk to any other pod. The vote service could bypass redis and talk directly to postgres. The worker service has the same Kubernetes permissions as a cluster administrator. Database passwords sit in plain environment variables, visible to anyone with kubectl access. In production, this is a security incident waiting to happen.
 
-- NetworkPolicies for pod-to-pod communication control
-- Pod Security Standards (restricted, baseline, privileged)
-- RBAC for application access control
-- Secrets management best practices
+This module locks down the Voting App layer by layer. You'll start with network isolation using NetworkPolicy to control which pods can communicate. Then you'll apply Pod Security Admission to prevent containers from running with dangerous privileges. You'll create least-privilege RBAC roles so services only have the permissions they actually need. Finally, you'll move secrets from environment variables to properly managed Kubernetes Secret resources.
 
-### Example
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: vote-app-policy
-spec:
-  podSelector:
-    matchLabels:
-      app: vote
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: frontend
-    ports:
-    - protocol: TCP
-      port: 80
-```
-
-## Coming Soon
-
-Full content will be added in later phases of this project.
+By the end, your Voting App will have defense-in-depth security. Multiple layers of protection, each guarding against different attack vectors. This is how you make Kubernetes applications production-ready.

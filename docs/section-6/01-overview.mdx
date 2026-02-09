@@ -3,43 +3,44 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 6: Helm
+# Module 6: Writing Helm Charts
 
 ## Overview
 
-This section teaches Helm package management for deploying and managing complex Kubernetes applications with templating and versioning.
+You have been writing raw YAML manifests for the Voting App. They work, but deploying to a new environment means editing every file: changing image tags, adjusting replica counts, updating resource limits. What if you could deploy the entire stack with one command, customize it with a single values file, and version your deployments? That is what Helm provides.
 
-### Key Concepts
+Helm is the package manager for Kubernetes. It transforms your collection of YAML files into reusable, parameterized, versionable deployment packages called charts.
 
-- Helm architecture (charts, values, templates)
-- Creating custom Helm charts
-- Chart dependencies and subcharts
-- Helm release lifecycle management
+## What You Will Learn
 
-### Example
+- **Helm chart structure and conventions**: Understand how charts organize templates, values, and metadata
+- **Go template syntax for Kubernetes manifests**: Write templates that render to valid YAML with configurable parameters
+- **values.yaml patterns for parameterized deployments**: Design configuration that works across dev, staging, and production
+- **Chart dependencies for reusing community charts**: Use Bitnami's redis and postgresql charts instead of maintaining your own
+- **Lifecycle hooks for deployment automation**: Run jobs before/after installs and upgrades for database migrations and setup tasks
 
-```yaml
-# values.yaml
-replicaCount: 3
+## Prerequisites
 
-image:
-  repository: schoolofdevops/vote
-  tag: v1
-  pullPolicy: IfNotPresent
+Before starting this module, ensure you have:
 
-service:
-  type: ClusterIP
-  port: 80
+- **Helm 3 installed**: Run `brew install helm` on macOS, or use the [official installer](https://helm.sh/docs/intro/install/)
+- **KIND cluster running with Voting App**: Either keep your existing deployment from Module 5, or be ready to deploy fresh
+- **Familiarity with Voting App architecture**: You should understand the five components (vote, result, worker, redis, postgres) and how they connect
 
-resources:
-  limits:
-    cpu: 500m
-    memory: 128Mi
-  requests:
-    cpu: 250m
-    memory: 64Mi
+Verify Helm installation:
+
+```bash
+helm version
 ```
 
-## Coming Soon
+You should see version v3.x or later (Helm 4 is also supported).
 
-Full content will be added in later phases of this project.
+## Module Metadata
+
+**Difficulty:** Intermediate
+
+**Estimated Time:** 100 minutes
+- Reading: 15 minutes
+- Lab: 60 minutes
+- Quiz: 15 minutes
+- Review: 10 minutes

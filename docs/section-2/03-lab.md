@@ -15,7 +15,7 @@ By the end of this lab, you will be able to:
 Before starting this lab, ensure you have:
 
 - Completed Module 0 and Module 1
-- A running KIND cluster with 3 worker nodes
+- A running KIND cluster with 2 worker nodes (standard 3-node cluster)
 - Example Voting App deployed with scheduling rules from Module 1
 - kubectl CLI configured to communicate with your cluster
 - Basic understanding of resource requests and limits
@@ -36,11 +36,10 @@ Expected output:
 ```bash
 Kubernetes control plane is running at https://127.0.0.1:xxxxx
 
-NAME                 STATUS   ROLES           AGE   VERSION
-kind-control-plane   Ready    control-plane   10d   v1.28.0
-kind-worker          Ready    <none>          10d   v1.28.0
-kind-worker2         Ready    <none>          10d   v1.28.0
-kind-worker3         Ready    <none>          10d   v1.28.0
+NAME                       STATUS   ROLES           AGE   VERSION
+voting-app-control-plane   Ready    control-plane   10d   v1.32.0
+voting-app-worker          Ready    <none>          10d   v1.32.0
+voting-app-worker2         Ready    <none>          10d   v1.32.0
 ```
 
 **Step 2: Verify Example Voting App is running**
@@ -94,7 +93,7 @@ spec:
     spec:
       containers:
       - name: result
-        image: schoolofdevops/vote:v1
+        image: dockersamples/examplevotingapp_result
         resources:
           requests:
             cpu: 100m
@@ -188,11 +187,10 @@ kubectl top pods
 Expected output:
 
 ```bash
-NAME                 CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
-kind-control-plane   150m         3%     800Mi           10%
-kind-worker          100m         2%     600Mi           7%
-kind-worker2         80m          2%     550Mi           6%
-kind-worker3         85m          2%     560Mi           6%
+NAME                       CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+voting-app-control-plane   150m         3%     800Mi           10%
+voting-app-worker          100m         2%     600Mi           7%
+voting-app-worker2         80m          2%     550Mi           6%
 
 NAME                      CPU(cores)   MEMORY(bytes)
 vote-xxxxxxxxxx-xxxxx     2m           50Mi

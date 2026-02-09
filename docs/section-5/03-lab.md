@@ -591,7 +591,7 @@ spec:
   - from: []  # Allow from anywhere
     ports:
     - protocol: TCP
-      port: 80
+      port: 8080
 ```
 
 Apply the policies:

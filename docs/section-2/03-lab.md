@@ -93,7 +93,7 @@ spec:
     spec:
       containers:
       - name: result
-        image: dockersamples/examplevotingapp_result
+        image: schoolofdevops/result:v1
         resources:
           requests:
             cpu: 100m

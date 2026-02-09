@@ -263,7 +263,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: vote
-        image: dockersamples/examplevotingapp_vote
+        image: schoolofdevops/vote:v1
         ports:
         - containerPort: 80
           name: http

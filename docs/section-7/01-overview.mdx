@@ -3,50 +3,37 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 7: CRDs
+# Module 7: Extending Kubernetes with CRDs
+
+## What You Will Learn
+
+By the end of this module, you will understand:
+
+- How CRDs extend the Kubernetes API to create custom resource types
+- Designing a custom resource schema with OpenAPI v3 validation
+- Creating and managing custom resources with kubectl
+- Status subresources for reporting resource state
+- How CRDs set the foundation for Operators (Module 8)
+
+## Prerequisites
+
+Before starting this module, ensure you have:
+
+- KIND cluster running
+- kubectl installed and configured
+- Familiarity with Kubernetes resource model (pods, deployments, services)
 
 ## Overview
 
-This section introduces Custom Resource Definitions (CRDs) to extend Kubernetes with custom API objects for domain-specific resources.
+Every kubectl command you have used so far—`kubectl get pods`, `kubectl get deployments`, `kubectl get services`—works because those resource types are built into the Kubernetes API. But what if you could define your OWN resource types? What if `kubectl get voteconfigs` worked just like `kubectl get pods`? That is exactly what Custom Resource Definitions give you.
 
-### Key Concepts
+## Time Estimate
 
-- Understanding Kubernetes API extension mechanisms
-- Creating and deploying CRDs
-- Schema validation with OpenAPI v3
-- Custom resource lifecycle management
+- **Reading:** 15 minutes
+- **Lab:** 45 minutes
+- **Quiz:** 15 minutes
+- **Total:** ~80 minutes
 
-### Example
+## Difficulty
 
-```yaml
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  name: votingapps.example.com
-spec:
-  group: example.com
-  versions:
-  - name: v1
-    served: true
-    storage: true
-    schema:
-      openAPIV3Schema:
-        type: object
-        properties:
-          spec:
-            type: object
-            properties:
-              replicas:
-                type: integer
-              image:
-                type: string
-  scope: Namespaced
-  names:
-    plural: votingapps
-    singular: votingapp
-    kind: VotingApp
-```
-
-## Coming Soon
-
-Full content will be added in later phases of this project.
+Intermediate-Advanced

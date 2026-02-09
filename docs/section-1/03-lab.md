@@ -15,10 +15,14 @@ By the end of this lab, you will be able to:
 Before starting this lab, ensure you have:
 
 - Completed **Module 0: Introduction and Getting Started**
-- A running **KIND cluster with 3 worker nodes**
+- A running **KIND cluster with 2 worker nodes** (standard 3-node cluster from Module 0)
 - The **Example Voting App** deployed and functional from Module 0
 - kubectl CLI configured to communicate with your cluster
 - Basic understanding of Kubernetes Deployments and Services
+
+:::note Cluster Configuration
+This lab uses the standard 3-node KIND cluster (1 control-plane + 2 workers) from Module 0. We'll demonstrate scheduling concepts across these 2 worker nodes.
+:::
 
 ## Setup
 
@@ -33,14 +37,13 @@ kubectl get nodes
 Expected output:
 
 ```bash
-NAME                 STATUS   ROLES           AGE   VERSION
-kind-control-plane   Ready    control-plane   1d    v1.28.0
-kind-worker          Ready    <none>          1d    v1.28.0
-kind-worker2         Ready    <none>          1d    v1.28.0
-kind-worker3         Ready    <none>          1d    v1.28.0
+NAME                       STATUS   ROLES           AGE   VERSION
+voting-app-control-plane   Ready    control-plane   1d    v1.32.0
+voting-app-worker          Ready    <none>          1d    v1.32.0
+voting-app-worker2         Ready    <none>          1d    v1.32.0
 ```
 
-You should see 1 control-plane node and 3 worker nodes, all in Ready status.
+You should see 1 control-plane node and 2 worker nodes, all in Ready status.
 
 **Step 2: Verify Voting App is running**
 
@@ -67,23 +70,22 @@ Expected output: `200` (Voting App is accessible)
 
 We'll simulate a production cluster where nodes have different hardware characteristics. In this case, we'll label one node as having SSD storage and the others as having HDD storage.
 
-**Step 1: Label kind-worker as an SSD node**
+**Step 1: Label voting-app-worker as an SSD node**
 
 ```bash
-kubectl label nodes kind-worker disktype=ssd
+kubectl label nodes voting-app-worker disktype=ssd
 ```
 
 Expected output:
 
 ```bash
-node/kind-worker labeled
+node/voting-app-worker labeled
 ```
 
-**Step 2: Label kind-worker2 and kind-worker3 as HDD nodes**
+**Step 2: Label voting-app-worker2 as an HDD node**
 
 ```bash
-kubectl label nodes kind-worker2 disktype=hdd
-kubectl label nodes kind-worker3 disktype=hdd
+kubectl label nodes voting-app-worker2 disktype=hdd
 ```
 
 **Step 3: Verify labels were applied**
@@ -95,11 +97,10 @@ kubectl get nodes -L disktype
 Expected output:
 
 ```bash
-NAME                 STATUS   ROLES           AGE   VERSION   DISKTYPE
-kind-control-plane   Ready    control-plane   1d    v1.28.0
-kind-worker          Ready    <none>          1d    v1.28.0   ssd
-kind-worker2         Ready    <none>          1d    v1.28.0   hdd
-kind-worker3         Ready    <none>          1d    v1.28.0   hdd
+NAME                       STATUS   ROLES           AGE   VERSION   DISKTYPE
+voting-app-control-plane   Ready    control-plane   1d    v1.32.0
+voting-app-worker          Ready    <none>          1d    v1.32.0   ssd
+voting-app-worker2         Ready    <none>          1d    v1.32.0   hdd
 ```
 
 The `-L disktype` flag shows the disktype label value for each node. We're simulating SSD vs HDD nodes. In production, these labels would represent real hardware differences.
@@ -186,11 +187,11 @@ kubectl wait --for=condition=ready pod -l app=postgres --timeout=60s
 kubectl get pod -l app=postgres -o wide
 ```
 
-Expected output shows the pod on kind-worker (our SSD node):
+Expected output shows the pod on voting-app-worker (our SSD node):
 
 ```bash
 NAME                        READY   STATUS    RESTARTS   AGE   NODE
-postgres-xxxxx-xxxxx        1/1     Running   0          30s   kind-worker
+postgres-xxxxx-xxxxx        1/1     Running   0          30s   voting-app-worker
 ```
 
 You can also use jsonpath to extract just the node name:
@@ -199,7 +200,7 @@ You can also use jsonpath to extract just the node name:
 kubectl get pod -l app=postgres -o jsonpath='{.items[0].spec.nodeName}'
 ```
 
-Expected: `kind-worker`
+Expected: `voting-app-worker`
 
 This demonstrates **required** node affinity. The postgres pod MUST schedule on a node with `disktype=ssd`. If no such node existed, the pod would stay Pending forever.
 
@@ -207,12 +208,12 @@ This demonstrates **required** node affinity. The postgres pod MUST schedule on 
 
 Right now, if all vote replicas land on the same node and that node fails, your entire voting frontend goes down. Let's spread vote replicas across different nodes using pod anti-affinity.
 
-**Step 1: Scale vote to 3 replicas**
+**Step 1: Scale vote to 2 replicas**
 
-First, let's ensure we have 3 vote replicas:
+First, let's scale vote to 2 replicas to demonstrate anti-affinity across our 2 worker nodes:
 
 ```bash
-kubectl scale deployment vote --replicas=3
+kubectl scale deployment vote --replicas=2
 ```
 
 **Step 2: Check current vote pod distribution**
@@ -221,7 +222,7 @@ kubectl scale deployment vote --replicas=3
 kubectl get pods -l app=vote -o wide
 ```
 
-You'll likely see vote pods distributed randomly, possibly with multiple pods on the same node.
+You'll likely see vote pods distributed randomly, possibly both on the same node.
 
 **Step 3: Create vote deployment with pod anti-affinity**
 
@@ -236,7 +237,7 @@ metadata:
     app: voting-app
     tier: frontend
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: vote
@@ -262,7 +263,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: vote
-        image: schoolofdevops/vote:v1
+        image: dockersamples/examplevotingapp_vote
         ports:
         - containerPort: 80
           name: http
@@ -303,37 +304,36 @@ Expected output shows each vote pod on a different node:
 
 ```bash
 NAME                    READY   STATUS    RESTARTS   AGE   NODE
-vote-xxxxx-aaaaa        1/1     Running   0          20s   kind-worker
-vote-xxxxx-bbbbb        1/1     Running   0          20s   kind-worker2
-vote-xxxxx-ccccc        1/1     Running   0          20s   kind-worker3
+vote-xxxxx-aaaaa        1/1     Running   0          20s   voting-app-worker
+vote-xxxxx-bbbbb        1/1     Running   0          20s   voting-app-worker2
 ```
 
-Now if one node goes down, 2/3 of your vote capacity survives. This is high availability through pod anti-affinity.
+Now if one node goes down, 1/2 of your vote capacity survives. This is high availability through pod anti-affinity.
 
-Note we used **preferred** anti-affinity, not required. If you only had 2 nodes but 3 replicas, the scheduler could still place 2 replicas on the same node. With required anti-affinity, the third replica would stay Pending.
+Note we used **preferred** anti-affinity, not required. This works perfectly with our 2-node cluster - each replica gets its own node. With required anti-affinity and more replicas than nodes, extra replicas would stay Pending.
 
 ### Task 4: Taints and Tolerations
 
 Taints repel pods from nodes. Let's taint kind-worker to see how it affects scheduling, then add a toleration to postgres so it can still run there.
 
-**Step 1: Taint kind-worker**
+**Step 1: Taint voting-app-worker**
 
 ```bash
-kubectl taint nodes kind-worker dedicated=database:NoSchedule
+kubectl taint nodes voting-app-worker dedicated=database:NoSchedule
 ```
 
 Expected output:
 
 ```bash
-node/kind-worker tainted
+node/voting-app-worker tainted
 ```
 
-This taint means "no new pods can schedule on kind-worker unless they tolerate the taint."
+This taint means "no new pods can schedule on voting-app-worker unless they tolerate the taint."
 
-**Step 2: Try to scale vote replicas to 4**
+**Step 2: Try to scale vote replicas to 3**
 
 ```bash
-kubectl scale deployment vote --replicas=4
+kubectl scale deployment vote --replicas=3
 ```
 
 Wait a moment, then check pod distribution:
@@ -342,7 +342,7 @@ Wait a moment, then check pod distribution:
 kubectl get pods -l app=vote -o wide
 ```
 
-Notice the new vote pod does NOT schedule on kind-worker (the tainted node). It goes to kind-worker2 or kind-worker3 instead. The taint is working - it repels pods that don't have a matching toleration.
+Notice the new (3rd) vote pod does NOT schedule on voting-app-worker (the tainted node). It goes to voting-app-worker2 instead. The taint is working - it repels pods that don't have a matching toleration.
 
 **Step 3: Check if postgres is affected**
 
@@ -350,7 +350,7 @@ Notice the new vote pod does NOT schedule on kind-worker (the tainted node). It 
 kubectl get pod -l app=postgres -o wide
 ```
 
-Postgres is still running on kind-worker because taints with the `NoSchedule` effect don't evict existing pods. They only prevent new pods from scheduling.
+Postgres is still running on voting-app-worker because taints with the `NoSchedule` effect don't evict existing pods. They only prevent new pods from scheduling.
 
 **Step 4: Delete postgres to see the taint in action**
 
@@ -374,12 +374,12 @@ You'll see events like:
 
 ```
 Events:
-  Warning  FailedScheduling  1s  default-scheduler  0/3 nodes are available: 1 node(s) had untolerated taint {dedicated: database}, ...
+  Warning  FailedScheduling  1s  default-scheduler  0/3 nodes are available: 1 node(s) had untolerated taint {dedicated: database}, 2 node(s) didn't match Pod's node affinity/selector
 ```
 
 The scheduler can't place postgres because:
-- The node affinity requires `disktype=ssd` (only kind-worker has this)
-- But kind-worker is tainted, and postgres doesn't have a toleration
+- The node affinity requires `disktype=ssd` (only voting-app-worker has this)
+- But voting-app-worker is tainted, and postgres doesn't have a toleration
 
 **Step 5: Add toleration to postgres**
 
@@ -444,7 +444,7 @@ The Pending postgres pod should now schedule successfully:
 kubectl get pod -l app=postgres -o wide
 ```
 
-Expected: Postgres is back on kind-worker, combining toleration (permission) and affinity (attraction).
+Expected: Postgres is back on voting-app-worker, combining toleration (permission) and affinity (attraction).
 
 **Step 7: Verify vote pods still avoid the tainted node**
 
@@ -464,19 +464,19 @@ kubectl scale deployment vote --replicas=3
 
 ### Task 5: Combined Strategy - Dedicated Database Node
 
-Let's put it all together. We want kind-worker to be a dedicated database node: fast storage (SSD), isolated from general workloads (tainted), with postgres preferring to run there.
+Let's put it all together. We want voting-app-worker to be a dedicated database node: fast storage (SSD), isolated from general workloads (tainted), with postgres preferring to run there.
 
 We already have:
-- Label: `disktype=ssd` on kind-worker
-- Taint: `dedicated=database:NoSchedule` on kind-worker
+- Label: `disktype=ssd` on voting-app-worker
+- Taint: `dedicated=database:NoSchedule` on voting-app-worker
 - Postgres affinity: requires `disktype=ssd`
 - Postgres toleration: tolerates `dedicated=database`
 
 **Step 1: Verify the complete configuration**
 
 ```bash
-kubectl describe node kind-worker | grep -A 5 Labels
-kubectl describe node kind-worker | grep Taints
+kubectl describe node voting-app-worker | grep -A 5 Labels
+kubectl describe node voting-app-worker | grep Taints
 ```
 
 Expected:
@@ -489,15 +489,15 @@ Expected:
 kubectl get pod -l app=postgres -o wide
 ```
 
-Expected: Postgres is on kind-worker (the dedicated database node)
+Expected: Postgres is on voting-app-worker (the dedicated database node)
 
-**Step 3: Verify other pods avoid kind-worker**
+**Step 3: Verify other pods avoid voting-app-worker**
 
 ```bash
-kubectl get pods -o wide | grep -v postgres | grep kind-worker
+kubectl get pods -o wide | grep -v postgres | grep "voting-app-worker[^2]"
 ```
 
-Expected: No output (no non-database pods on kind-worker)
+Expected: Only vote pods that existed before the taint (no new non-database pods on voting-app-worker)
 
 **Step 4: Check overall pod distribution**
 
@@ -506,9 +506,9 @@ kubectl get pods -o wide
 ```
 
 You should see:
-- Postgres: kind-worker (dedicated database node)
-- Vote (3 replicas): distributed across kind-worker2 and kind-worker3
-- Result, worker, redis: kind-worker2 or kind-worker3
+- Postgres: voting-app-worker (dedicated database node)
+- Vote (3 replicas): 1 on voting-app-worker (pre-taint), 2 on voting-app-worker2
+- Result, worker, redis: voting-app-worker2
 
 This is a realistic production pattern: dedicated nodes for stateful workloads, spread replicas for HA, keep workloads isolated.
 
@@ -656,10 +656,10 @@ Expected output: `200` (Voting App still works after all scheduling changes)
 
 Do NOT clean up the resources from this lab. Module 2 (Autoscaling) builds on the current state.
 
-However, we should remove the taint from kind-worker to have a cleaner starting point for Module 2:
+However, we should remove the taint from voting-app-worker to have a cleaner starting point for Module 2:
 
 ```bash
-kubectl taint nodes kind-worker dedicated=database:NoSchedule-
+kubectl taint nodes voting-app-worker dedicated=database:NoSchedule-
 ```
 
 The `-` at the end removes the taint.
@@ -667,7 +667,7 @@ The `-` at the end removes the taint.
 Verify the taint is removed:
 
 ```bash
-kubectl describe node kind-worker | grep Taints
+kubectl describe node voting-app-worker | grep Taints
 ```
 
 Expected output: `Taints: <none>`

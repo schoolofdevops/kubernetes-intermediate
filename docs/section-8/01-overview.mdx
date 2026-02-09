@@ -3,38 +3,64 @@ sidebar_position: 1
 title: Overview
 ---
 
-# Section 8: Operators
+# Module 8: Building Kubernetes Operators
 
-## Overview
+## Learning Transformation
 
-This section teaches how to build Kubernetes operators to automate application management using the Operator pattern and frameworks.
+In Module 7, you created the VoteConfig CRD and manually created ConfigMaps from VoteConfig data. You experienced the staleness problem: when you updated a VoteConfig, the ConfigMap didn't automatically update. You had to manually reconcile changes.
 
-### Key Concepts
+This module transforms you from "I created a CRD" to "I built an operator that automates reconciliation." You'll build a working VoteConfig operator using Kubebuilder that watches VoteConfig resources and automatically creates and updates ConfigMaps. By the end, you'll understand the complete operator development workflow and how operators make custom resources truly declarative.
 
-- Operator pattern and reconciliation loop
-- Controller-runtime and Kubebuilder framework
-- Custom controllers for CRDs
-- Operator lifecycle management
+## Time Estimate
 
-### Example
+**Total:** ~100 minutes
 
-```go
-// Reconcile handles VotingApp resource reconciliation
-func (r *VotingAppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-    log := log.FromContext(ctx)
+- Reading materials: 20 minutes
+- Hands-on lab: 75 minutes
+- Quiz: 5 minutes
 
-    var votingApp examplev1.VotingApp
-    if err := r.Get(ctx, req.NamespacedName, &votingApp); err != nil {
-        return ctrl.Result{}, client.IgnoreNotFound(err)
-    }
+## Prerequisites
 
-    // Reconciliation logic here
-    log.Info("Reconciling VotingApp", "name", votingApp.Name)
+Before starting this module, you should have:
 
-    return ctrl.Result{}, nil
-}
-```
+- Module 7 completed (VoteConfig CRD created and tested)
+- Go 1.21+ installed on your machine (`go version`)
+- Docker installed and running
+- KIND cluster running with VoteConfig CRD installed
+- kubectl configured to access your cluster
+- Basic Go familiarity (you don't need to be an expert—we provide complete code)
 
-## Coming Soon
+## Learning Objectives
 
-Full content will be added in later phases of this project.
+By the end of this module, you will:
+
+- Understand the operator pattern (controller + CRD = declarative automation)
+- Implement a reconciliation loop that observes, compares, and acts
+- Use Kubebuilder to scaffold and build operators following best practices
+- Write controller logic that creates and updates Kubernetes resources
+- Deploy operators to clusters and verify reconciliation behavior
+- Apply finalizers for cleanup logic when resources are deleted
+- Recognize when operators add value versus when they add unnecessary complexity
+
+## What You'll Build
+
+You'll create a VoteConfig operator that:
+
+- Watches for VoteConfig custom resources
+- Automatically creates ConfigMaps from VoteConfig data
+- Updates ConfigMaps when VoteConfig changes
+- Cleans up ConfigMaps when VoteConfig is deleted
+- Updates status to show reconciliation state
+
+This involves writing Go code, but don't worry—we provide step-by-step instructions and complete, working code snippets you can copy and adapt. The goal is understanding the operator pattern, not becoming a Go expert.
+
+## Note About Go Code
+
+This module involves writing Go code for the operator controller. If you're not familiar with Go, that's okay. Focus on understanding these concepts:
+
+- What the reconciliation loop does (observe → compare → act)
+- How controllers interact with the Kubernetes API
+- Why idempotency matters for operators
+- When to use operators versus simpler patterns
+
+The lab provides complete code you can copy. You'll learn by seeing how the pieces fit together.

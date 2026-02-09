@@ -137,10 +137,13 @@ Which OpenAPI v3 schema validation would correctly enforce these rules?
 
 **Options:**
 
-A) id: {type: string, minLength: 1, maxLength: 1} and color: {type: string, minLength: 7, maxLength: 7}
-B) id: {type: string, pattern: "^[a-z]$"} and color: {type: string, pattern: "^#[0-9A-Fa-f]{6}$"}
-C) id: {type: string, enum: ["a","b","c"]} and color: {type: string, format: "color"}
-D) id: {type: string, pattern: "[a-z]"} and color: {type: string, pattern: "#[0-9A-F]{6}"}
+A) `id: {type: string, minLength: 1, maxLength: 1}` and `color: {type: string, minLength: 7, maxLength: 7}`
+
+B) `id: {type: string, pattern: "^[a-z]$"}` and `color: {type: string, pattern: "^#[0-9A-Fa-f]{6}$"}`
+
+C) `id: {type: string, enum: ["a","b","c"]}` and `color: {type: string, format: "color"}`
+
+D) `id: {type: string, pattern: "[a-z]"}` and `color: {type: string, pattern: "#[0-9A-F]{6}"}`
 
 **Correct Answer:** B
 

@@ -350,8 +350,19 @@ spec:
         image: "{{ .Values.result.image.repository }}:{{ .Values.result.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.result.image.pullPolicy }}
         ports:
-        - containerPort: 80
+        - containerPort: 8080
           name: http
+        env:
+        - name: POSTGRES_HOST
+          value: "{{ .Release.Name }}-postgresql"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_USER
+          value: {{ .Values.postgresql.auth.username | quote }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.postgresql.auth.password | quote }}
+        - name: POSTGRES_DB
+          value: {{ .Values.postgresql.auth.database | quote }}
         resources:
           {{- toYaml .Values.result.resources | nindent 10 }}
 ```

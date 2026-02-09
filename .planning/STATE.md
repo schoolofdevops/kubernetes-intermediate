@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-08)
 ## Current Position
 
 Phase: 4 of 5 (Advanced Content - Modules 5-9)
-Plan: 2 of 5
+Plan: 3 of 5
 Status: In progress
-Last activity: 2026-02-09 — Completed 04-02-PLAN.md (Module 6: Writing Helm Charts)
+Last activity: 2026-02-09 — Completed 04-03-PLAN.md (Module 7: CRDs)
 
-Progress: [████░░░░░░] 40%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 8 minutes
-- Total execution time: 1.4 hours
+- Total execution time: 1.6 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [████░░░░░░] 40%
 | 01 Platform Foundation | 2/2 | 22 min | 11 min |
 | 02 Content Infrastructure | 2/2 | 13 min | 7 min |
 | 03 Core Content (0-4) | 5/5 | 33 min | 7 min |
-| 04 Advanced Content (5-9) | 2/5 | 15 min | 8 min |
+| 04 Advanced Content (5-9) | 3/5 | 31 min | 10 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (6 min), 03-03 (6 min), 03-04 (8 min), 03-05 (7 min), 04-02 (15 min)
+- Last 5 plans: 03-03 (6 min), 03-04 (8 min), 03-05 (7 min), 04-02 (15 min), 04-03 (16 min)
 - Trend: Phase 4 started - Module 6 (Helm) delivered in 15 minutes
 - Phase 4 modules may take longer (advanced topics with more complexity)
 - Module 6: 2619-word reading, 1089-line lab, 13-question quiz
@@ -78,6 +78,8 @@ Recent decisions affecting current work:
 - D026 (04-02): Exact dependency version locking (18.19.4 not 18.x for reproducibility)
 - D027 (04-02): Anti-pattern documentation (over-templatization warnings)
 - D028 (04-02): Bitnami dependency pattern (reuse community charts, not custom manifests)
+- D029 (04-03): VoteConfig CRD as learning example (simple voting options with validation, realistic patterns, Module 8 foundation)
+- D030 (04-03): Manual CRD-to-ConfigMap bridging in lab (demonstrates reconciliation pain, motivates operator need)
 
 ### Pending Todos
 

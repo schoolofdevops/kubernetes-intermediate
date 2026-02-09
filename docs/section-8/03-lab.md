@@ -70,7 +70,7 @@ kubectl cluster-info
 # Should show: Kubernetes control plane is running...
 
 # Check VoteConfig CRD exists (from Module 7)
-kubectl get crd voteconfigs.voting.schoolofdevops.com
+kubectl get crd voteconfigs.voting.example.com
 # Should show the CRD
 ```
 

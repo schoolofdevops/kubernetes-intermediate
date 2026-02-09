@@ -460,7 +460,18 @@ worker:
     requests:
       cpu: 100m
       memory: 128Mi
+
+# Placeholder for postgresql dependency (will be fully configured in Task 3)
+postgresql:
+  auth:
+    username: postgres
+    password: postgres
+    database: votes
 ```
+
+:::note[Why add postgresql here?]
+The result deployment template references `.Values.postgresql.auth.*` values. Adding these placeholder values now prevents template rendering errors. Task 3 will add the full postgresql dependency configuration.
+:::
 
 **Step 5: Upgrade the release**
 
@@ -603,7 +614,28 @@ ls -lh ./voting-app/charts/
 
 You should see two .tgz files: `redis-18.19.4.tgz` and `postgresql-15.5.38.tgz`.
 
-**Step 5: Update worker environment variables**
+**Step 5: Update vote environment variables**
+
+Edit `voting-app/templates/vote-deployment.yaml` and add the Redis connection environment variable:
+
+```yaml
+      containers:
+      - name: vote
+        image: "{{ .Values.vote.image.repository }}:{{ .Values.vote.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.vote.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: REDIS_HOST
+          value: "{{ .Release.Name }}-redis-master"
+        resources:
+          {{- toYaml .Values.vote.resources | nindent 10 }}
+```
+
+The vote service needs to connect to Redis to store votes.
+
+**Step 6: Update worker environment variables**
 
 Edit `voting-app/templates/worker-deployment.yaml` and add environment variables:
 
@@ -625,13 +657,13 @@ Edit `voting-app/templates/worker-deployment.yaml` and add environment variables
           {{- toYaml .Values.worker.resources | nindent 10 }}
 ```
 
-**Step 6: Upgrade the release**
+**Step 7: Upgrade the release**
 
 ```bash
 helm upgrade voting-app ./voting-app -n helm-voting-app
 ```
 
-**Step 7: Verify all pods running**
+**Step 8: Verify all pods running**
 
 ```bash
 kubectl get pods -n helm-voting-app
@@ -639,7 +671,7 @@ kubectl get pods -n helm-voting-app
 
 Expected: Vote (2), result (2), worker (1), redis (1), postgresql (1) all running. This may take 30-60 seconds as redis and postgresql initialize.
 
-**Step 8: Check service names**
+**Step 9: Check service names**
 
 ```bash
 kubectl get svc -n helm-voting-app

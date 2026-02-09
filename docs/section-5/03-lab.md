@@ -248,7 +248,18 @@ spec:
       - name: result
         image: schoolofdevops/result:v1
         ports:
-        - containerPort: 80
+        - containerPort: 8080
+        env:
+        - name: POSTGRES_HOST
+          value: "db"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+        - name: POSTGRES_DB
+          value: "postgres"
 ---
 apiVersion: v1
 kind: Service
@@ -260,7 +271,7 @@ spec:
     app: result
   ports:
   - port: 80
-    targetPort: 80
+    targetPort: 8080
 ```
 
 Deploy the application:

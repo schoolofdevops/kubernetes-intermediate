@@ -1,14 +1,16 @@
-# Lab: Evaluating Service Mesh for the Voting App
+# Lab: Service Mesh Exploration with Istio
 
 ## Objectives
 
 By the end of this lab, you will be able to:
 
-- Apply the service mesh decision framework to a real application
-- Map service-to-service communication patterns and classify connections
-- Evaluate service mesh benefits versus simpler alternatives
-- Document a formal technology adoption decision with clear reasoning
-- (Optional) Install Linkerd and observe mesh behavior in action
+- Map service-to-service communication patterns in a microservices application
+- Understand when service mesh adds value versus simpler alternatives
+- Install and configure Istio service mesh on a KIND cluster
+- Inject Istio sidecars into application workloads
+- Explore service mesh observability with Kiali, Grafana, and Jaeger
+- Experience service mesh traffic management capabilities
+- Manage resources effectively when running service mesh locally
 
 ## Prerequisites
 
@@ -36,11 +38,10 @@ Expected output:
 Kubernetes control plane is running at https://127.0.0.1:xxxxx
 CoreDNS is running at https://127.0.0.1:xxxxx/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
-NAME                 STATUS   ROLES           AGE   VERSION
-kind-control-plane   Ready    control-plane   10d   v1.27.3
-kind-worker          Ready    <none>          10d   v1.27.3
-kind-worker2         Ready    <none>          10d   v1.27.3
-kind-worker3         Ready    <none>          10d   v1.27.3
+NAME                       STATUS   ROLES           AGE   VERSION
+voting-app-control-plane   Ready    control-plane   10d   v1.32.0
+voting-app-worker          Ready    <none>          10d   v1.32.0
+voting-app-worker2         Ready    <none>          10d   v1.32.0
 ```
 
 **Step 2: Verify Example Voting App is running**
@@ -381,149 +382,254 @@ Revisit service mesh adoption when any of these conditions are met:
 
 **Deliverable:** Formal decision document following the template with clear reasoning.
 
-### Task 5 (Challenge - Optional): Hands-On with Linkerd
+### Task 5: Hands-On Istio Service Mesh Exploration
 
-If you want to see service mesh behavior in action, try this optional hands-on challenge. This adds ~20 minutes to the lab.
+Now let's install Istio and explore service mesh capabilities hands-on. This is an exploratory quest - you'll install Istio, observe its behavior, and then clean up. Istio is resource-intensive, so we'll optimize our cluster first.
 
-:::note[Optional Challenge]
-This challenge is purely exploratory. The evaluation tasks (1-4) are the core learning. Don't worry if you encounter installation issues - service mesh hands-on experience comes with more practice.
+:::caution[Resource Management]
+Istio requires significant resources. We'll scale down non-essential workloads before installation and clean up thoroughly afterwards. This is a common pattern for local Kubernetes development.
 :::
 
-**Step 1: Install Linkerd CLI**
+**Step 1: Prepare resources - Scale down existing workloads**
+
+Before installing Istio, scale down replicas to conserve resources:
 
 ```bash
-# Install Linkerd CLI
-curl -sL https://linkerd.io/install | sh
+# Scale down voting app to minimal replicas
+kubectl scale deployment vote --replicas=1
+kubectl scale deployment result --replicas=1
+kubectl scale deployment worker --replicas=1
 
-# Add to PATH
-export PATH=$PATH:$HOME/.linkerd2/bin
+# Verify scaled down
+kubectl get deployments
+```
+
+Expected output: vote, result, and worker should show 1/1 replicas.
+
+**Step 2: Install Istio CLI (istioctl)**
+
+```bash
+# Download Istio (version 1.24.2 - tested with KIND)
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.24.2 sh -
+
+# Move to directory and add to PATH
+cd istio-1.24.2
+export PATH=$PWD/bin:$PATH
 
 # Verify installation
-linkerd version
+istioctl version
 ```
 
-Expected output:
+Expected output shows client version 1.24.2 (server version will show after installation).
+
+**Step 3: Install Istio with the demo profile**
+
+The demo profile includes observability tools (Kiali, Grafana, Jaeger) for exploration:
 
 ```bash
-Client version: stable-2.15.x
-Server version: unavailable
+# Install Istio with demo profile (includes observability addons)
+istioctl install --set profile=demo -y
+
+# Verify installation
+kubectl get pods -n istio-system
 ```
 
-**Step 2: Validate cluster compatibility**
+Expected output: Multiple Istio pods running including istiod (control plane), istio-ingressgateway, and istio-egressgateway. Wait until all pods show STATUS: Running (may take 2-3 minutes).
 
 ```bash
-linkerd check --pre
+# Wait for Istio to be ready
+kubectl wait --for=condition=available --timeout=300s deployment --all -n istio-system
 ```
 
-Expected output: All checks pass (green checkmarks). If any checks fail, note the issue - common failures include:
-
-- Kubernetes version too old (need 1.21+)
-- Insufficient cluster resources
-- Clock skew issues in KIND cluster
-
-**Step 3: Install Linkerd control plane**
+**Step 4: Enable automatic sidecar injection for the default namespace**
 
 ```bash
-# Install Linkerd CRDs
-linkerd install --crds | kubectl apply -f -
+# Label the namespace for automatic sidecar injection
+kubectl label namespace default istio-injection=enabled
 
-# Install Linkerd control plane
-linkerd install | kubectl apply -f -
-
-# Wait for Linkerd to be ready (may take 2-3 minutes)
-linkerd check
+# Verify label
+kubectl get namespace default --show-labels
 ```
 
-Expected output: All checks pass. The control plane includes: linkerd-destination, linkerd-identity, linkerd-proxy-injector.
+Expected output: Should show `istio-injection=enabled` in labels.
 
-**Step 4: Inject Linkerd sidecars into the Voting App**
+**Step 5: Restart deployments to inject Istio sidecars**
 
 ```bash
-# Get current Voting App deployments
-kubectl get deploy -o yaml > voting-app-backup.yaml
+# Restart all deployments to trigger sidecar injection
+kubectl rollout restart deployment vote
+kubectl rollout restart deployment result
+kubectl rollout restart deployment worker
+kubectl rollout restart deployment redis
+kubectl rollout restart deployment postgres
 
-# Inject Linkerd sidecars
-kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
+# Wait for rollout to complete
+kubectl rollout status deployment vote
+kubectl rollout status deployment result
+kubectl rollout status deployment worker
 
 # Verify sidecars are injected (each pod should now have 2 containers)
 kubectl get pods
 ```
 
-Expected output: Each pod now shows `2/2` containers (application + linkerd-proxy sidecar).
+Expected output: Each pod now shows `2/2` containers (application + istio-proxy sidecar).
 
-**Step 5: Observe service mesh behavior**
+**Step 6: Install Istio observability addons**
 
 ```bash
-# View service topology (which services are communicating)
-linkerd viz install | kubectl apply -f -
-linkerd viz check
+# Install Kiali (service mesh dashboard)
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/kiali.yaml
 
-# Open Linkerd dashboard (if available)
-linkerd viz dashboard &
+# Install Prometheus (metrics)
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/prometheus.yaml
 
-# OR use CLI to view metrics
-linkerd viz stat deploy
+# Install Grafana (dashboards)
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/grafana.yaml
 
-# See mTLS in action (edges show which services are communicating securely)
-linkerd viz edges deploy
+# Install Jaeger (distributed tracing)
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/jaeger.yaml
 
-# Check per-service success rate, request rate, latency
-linkerd viz top deploy
+# Wait for addons to be ready
+kubectl wait --for=condition=available --timeout=300s deployment --all -n istio-system
 ```
 
-**Step 6: Generate traffic and observe metrics**
+**Step 7: Generate traffic to observe**
 
 ```bash
-# Port-forward vote service
-kubectl port-forward svc/vote 8080:80 &
+# Access the vote service via NodePort
+curl http://localhost:30000
 
-# Generate some votes
-for i in {1..20}; do
-  curl -s -X POST http://localhost:8080 -d "vote=a"
-  sleep 1
+# Generate multiple votes to create traffic
+for i in {1..30}; do
+  curl -s http://localhost:30000 > /dev/null
+  echo "Request $i sent"
+  sleep 0.5
 done
-
-# Check metrics again
-linkerd viz stat deploy
 ```
 
-**Step 7: Reflect on the experience**
+**Step 8: Explore Kiali dashboard (Service Topology)**
 
-In your evaluation document, add:
-
-```markdown
-## Challenge: Linkerd Hands-On Reflection
-
-**What I observed:**
-- [Did you see mTLS working? What did `linkerd viz edges` show?]
-- [What metrics did you see that kubectl couldn't show? Per-service request rate? Success rate? Latency percentiles?]
-- [Did the Linkerd dashboard provide useful visualizations?]
-
-**Was this worth the setup?**
-- Installation time: [How long did it take?]
-- Complexity: [Did you encounter issues? How difficult was troubleshooting?]
-- Value: [What did you learn that kubectl alone couldn't show you?]
-
-**For the Voting App specifically:**
-- [Did the mesh reveal any insights about service communication?]
-- [Would you change your ADOPT/DEFER decision based on this hands-on experience?]
-```
-
-**Step 8: Clean up Linkerd**
+Open Kiali in a new terminal:
 
 ```bash
-# Remove Linkerd sidecars from Voting App
-kubectl get deploy -o yaml | linkerd uninject - | kubectl apply -f -
+istioctl dashboard kiali
+```
 
-# Uninstall Linkerd control plane
-linkerd viz uninstall | kubectl delete -f -
-linkerd uninstall | kubectl delete -f -
+This opens Kiali at http://localhost:20001/kiali. Explore:
+- **Graph**: Visual topology showing vote → redis → worker → postgres → result
+- **Applications**: List of all services in the mesh
+- **Workloads**: Pods with sidecars
+- **Services**: Service endpoints
+- **Istio Config**: Gateway, VirtualService, DestinationRule resources
+
+Look for:
+- Green lines indicating healthy communication
+- mTLS lock icons showing encrypted traffic
+- Request rates and error rates
+
+**Step 9: Explore Grafana dashboards (Metrics)**
+
+Open Grafana in a new terminal:
+
+```bash
+istioctl dashboard grafana
+```
+
+This opens Grafana at http://localhost:3000. Navigate to:
+- **Istio Mesh Dashboard**: Cluster-wide metrics
+- **Istio Service Dashboard**: Per-service metrics (request rate, latency, error rate)
+- **Istio Workload Dashboard**: Per-pod metrics
+
+**Step 10: Explore Jaeger (Distributed Tracing)**
+
+Open Jaeger in a new terminal:
+
+```bash
+istioctl dashboard jaeger
+```
+
+This opens Jaeger at http://localhost:16686. Select the "vote" service and click "Find Traces" to see:
+- Complete request paths through the system
+- Latency breakdown per service
+- Service dependencies
+
+**Step 11: (Optional) Try traffic management**
+
+If time permits, experiment with Istio traffic management:
+
+```bash
+# Create a VirtualService for traffic splitting (canary deployment simulation)
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: vote
+spec:
+  hosts:
+  - vote
+  http:
+  - route:
+    - destination:
+        host: vote
+      weight: 100
+EOF
+
+# View the VirtualService
+kubectl get virtualservice
+```
+
+Explore more traffic management in Kiali by creating traffic routing rules.
+
+**Step 12: Clean up Istio**
+
+After exploration, clean up to free resources:
+
+```bash
+# Remove sidecar injection label from namespace
+kubectl label namespace default istio-injection-
+
+# Delete the Voting App to remove sidecars
+kubectl delete deployment vote result worker redis postgres
+kubectl delete service vote result redis postgres
+
+# Redeploy without sidecars
+kubectl apply -f examples/voting-app/
+
+# Uninstall Istio addons
+kubectl delete -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/kiali.yaml
+kubectl delete -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/prometheus.yaml
+kubectl delete -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/grafana.yaml
+kubectl delete -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/jaeger.yaml
+
+# Uninstall Istio
+istioctl uninstall --purge -y
+
+# Delete istio-system namespace
+kubectl delete namespace istio-system
 
 # Verify removal
 kubectl get pods
+kubectl get namespace istio-system
 ```
 
-Expected output: Pods should be back to `1/1` containers (application only, no sidecar).
+Expected output:
+- Pods show `1/1` containers (no sidecars)
+- istio-system namespace should not exist
+
+**Step 13: Verify Voting App still works**
+
+```bash
+# Check pods are running normally
+kubectl get pods
+
+# Test vote service
+curl http://localhost:30000
+
+# Test result service
+curl http://localhost:30100
+```
+
+Expected output: Both services should respond with HTML (no 404 or 500 errors).
 
 ## Verification
 
@@ -551,9 +657,9 @@ Check your evaluation document contains Task 4 with a formal decision (ADOPT/DEF
 - Revisit conditions
 - Next steps
 
-**5. (Optional) Linkerd reflection**
+**5. Istio exploration completed**
 
-If you completed the challenge, check your evaluation document contains reflections on the hands-on experience.
+You successfully installed Istio, injected sidecars, explored observability tools (Kiali/Grafana/Jaeger), and cleaned up.
 
 **6. Voting App still functional**
 
@@ -570,94 +676,120 @@ curl http://localhost:8080
 
 ## Cleanup
 
-This module is evaluation-focused, so there's minimal cleanup needed:
+Istio cleanup is handled in Task 5, Step 12. Verify cleanup was successful:
 
 ```bash
-# If you completed the Linkerd challenge, verify Linkerd is removed
-kubectl get pods -n linkerd
-# Should return "No resources found in linkerd namespace" or namespace not found
+# Verify Istio is removed
+kubectl get namespace istio-system
+# Should return "Error from server (NotFound)"
 
-# Keep the Voting App running for future modules
-# Your evaluation document is a standalone artifact - keep it for reference
+# Verify Voting App has no sidecars
+kubectl get pods
+# All pods should show 1/1 containers (not 2/2)
+
+# Verify services work without mesh
+curl http://localhost:30000  # vote service
+curl http://localhost:30100  # result service
+# Both should return HTML responses
 ```
 
-**Note:** Keep your KIND cluster and Voting App running. Future modules may reference your decision document or build on the deployment.
+**Note:** Keep your KIND cluster and Voting App running. Future modules build on this deployment.
 
 ## Troubleshooting
 
-### Issue: Linkerd Pre-Check Fails (Clock Skew)
+### Issue: Istio Installation Times Out
 
-**Symptom:** `linkerd check --pre` shows error: "control plane clocks are not synced"
+**Symptom:** `istioctl install` hangs or Istio pods stuck in Pending/ContainerCreating
 
-**Cause:** KIND cluster nodes have clock drift (common in Docker-based clusters)
-
-**Solution:**
-
-This is a known KIND limitation. You can ignore this warning for a development environment, or restart your KIND cluster:
-
-```bash
-kind delete cluster
-kind create cluster --config examples/kind-cluster.yaml
-# Redeploy Voting App
-kubectl apply -f examples/voting-app/
-```
-
-### Issue: Linkerd Dashboard Not Accessible
-
-**Symptom:** `linkerd viz dashboard` fails to open browser or shows connection refused
-
-**Cause:** Port forwarding issues or viz extension not fully deployed
+**Cause:** Insufficient cluster resources (Istio needs ~2GB RAM)
 
 **Solution:**
 
-Use CLI alternatives instead of the dashboard:
+Scale down more workloads or increase Docker Desktop resources:
 
 ```bash
-# Check viz extension status
-linkerd viz check
+# Scale down all voting app replicas
+kubectl scale deployment --all --replicas=0
 
-# Use CLI commands instead of dashboard
-linkerd viz stat deploy        # Service statistics
-linkerd viz edges deploy       # Service communication graph
-linkerd viz top deploy          # Live request metrics
-linkerd viz tap deploy/vote    # Live request stream (like tcpdump)
+# Then retry Istio installation
+istioctl install --set profile=demo -y
 ```
 
-### Issue: Voting App Pods Fail After Sidecar Injection
+Or increase Docker Desktop: Settings → Resources → Memory (set to at least 6GB).
 
-**Symptom:** After `linkerd inject`, worker pods show CrashLoopBackOff or vote/result services can't connect to redis/postgres
+### Issue: Kiali/Grafana Dashboard Not Accessible
 
-**Cause:** Linkerd proxy initialization may interfere with application startup or connection logic
+**Symptom:** `istioctl dashboard kiali` fails or shows connection refused
+
+**Cause:** Addon pods not running or port-forward issues
 
 **Solution:**
 
-Check pod events and logs:
+Check addon status:
 
 ```bash
-kubectl describe pod <pod-name>
-kubectl logs <pod-name> -c linkerd-proxy
-kubectl logs <pod-name> -c <app-container-name>
+kubectl get pods -n istio-system | grep -E 'kiali|grafana|jaeger'
 ```
 
-Common fix: Restart the affected pods:
+If pods are not Running, reapply addons:
 
 ```bash
-kubectl rollout restart deploy/worker
-kubectl rollout restart deploy/vote
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/kiali.yaml
+kubectl wait --for=condition=available --timeout=300s deployment/kiali -n istio-system
 ```
 
-If issues persist, uninject and proceed without the hands-on challenge:
+### Issue: Sidecars Not Injected After Rollout Restart
+
+**Symptom:** Pods still show 1/1 containers after restart
+
+**Cause:** Namespace not labeled for sidecar injection
+
+**Solution:**
+
+Verify and re-label namespace:
 
 ```bash
-kubectl get deploy -o yaml | linkerd uninject - | kubectl apply -f -
+kubectl get namespace default --show-labels
+kubectl label namespace default istio-injection=enabled --overwrite
+kubectl rollout restart deployment --all
+```
+
+### Issue: Voting App Broken After Istio Installation
+
+**Symptom:** Services can't communicate (vote can't reach redis, worker can't reach postgres)
+
+**Cause:** Istio mTLS strict mode or misconfigured PeerAuthentication
+
+**Solution:**
+
+Check if services are in the mesh:
+
+```bash
+kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[*].name}{"\n"}{end}'
+```
+
+All pods should show both app container and istio-proxy. If communication fails, check Kiali for connection issues or temporarily disable strict mTLS:
+
+```bash
+kubectl apply -f - <<EOF
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: default
+spec:
+  mtls:
+    mode: PERMISSIVE
+EOF
 ```
 
 ## Key Takeaways
 
-- Service mesh is a powerful tool, but it's not always necessary - decision-making skills matter more than implementation skills
-- The decision framework (mTLS needs, observability needs, service count, team capacity) helps evaluate whether mesh benefits outweigh complexity costs
-- For small applications (5-10 services), simpler alternatives (NetworkPolicy, Prometheus, Gateway API) often cover 80% of use cases without mesh overhead
-- Service mesh becomes valuable at scale (10+ services) or when you have specific requirements (regulatory compliance, multi-tenancy) that simpler tools can't meet
-- The Voting App (5 services, simple pattern, development stage) likely doesn't need service mesh yet - revisit when scaling to production or adding more services
+- **Service mesh provides powerful capabilities**: Automatic mTLS, detailed observability (Kiali topology, Grafana metrics, Jaeger tracing), and sophisticated traffic management all without changing application code
+- **Resource overhead is significant**: Istio adds sidecars (2 containers per pod), control plane components, and observability addons - this works for production clusters but requires careful resource management in local development
+- **Observability value is immediate**: Kiali's service graph visualization and Grafana's per-service metrics provide insights that kubectl alone cannot show - this is valuable even for small applications during troubleshooting
+- **Decision framework matters**: For the Voting App (5 services, simple patterns), service mesh capabilities are impressive but may be overkill - simpler alternatives (NetworkPolicy for security, Prometheus for metrics, Gateway API for traffic) cover many use cases with less complexity
+- **Local exploration is valuable**: Hands-on experience with Istio in KIND provides learning without production risk - understanding mesh behavior helps evaluate when to adopt it in real projects
+- **Scale changes the equation**: Service mesh becomes more valuable as service count grows (10+ services) or when specific requirements (compliance, multi-tenancy, zero-trust) demand its capabilities
 
-The most important skill is knowing WHEN to adopt infrastructure tools, not just HOW to use them.
+The most important outcome is understanding service mesh capabilities AND tradeoffs to make informed adoption decisions.

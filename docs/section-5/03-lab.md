@@ -673,7 +673,7 @@ kubectl apply -f voting-app-namespace-psa.yaml
 PSA only evaluates pods at creation time. Existing pods are grandfathered:
 
 ```bash
-kubectl rollout restart deployment --all -n voting-app
+kubectl rollout restart deployment vote result worker db redis -n voting-app
 ```
 
 Wait for rollout to complete:

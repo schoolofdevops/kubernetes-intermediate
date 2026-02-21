@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 7 - Extending Kubernetes with CRDs
 
 **Module:** 7

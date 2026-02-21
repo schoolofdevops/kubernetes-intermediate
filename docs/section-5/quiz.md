@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 5 - Security (NetworkPolicy, PSA, RBAC)
 
 **Module:** 5

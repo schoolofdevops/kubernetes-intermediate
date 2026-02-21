@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 3 - Gateway API
 
 **Module:** 3

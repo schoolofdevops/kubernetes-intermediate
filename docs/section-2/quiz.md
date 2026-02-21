@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 2 - Autoscaling
 
 **Module:** 2

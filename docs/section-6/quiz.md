@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 6 - Writing Helm Charts
 
 **Module:** 6

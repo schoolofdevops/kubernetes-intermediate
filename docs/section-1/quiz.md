@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 1 - Advanced Pod Scheduling
 
 **Module:** 1

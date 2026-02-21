@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Module 8: Building Kubernetes Operators - Quiz
 
 Test your understanding of Kubernetes operators, reconciliation loops, and the operator pattern.

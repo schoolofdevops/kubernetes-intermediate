@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 0 - Introduction and Getting Started
 
 **Module:** 0

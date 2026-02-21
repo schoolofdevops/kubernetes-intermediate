@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 4 - Service Mesh
 
 **Module:** 4

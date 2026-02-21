@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Quiz: Module 9 - Intro to Agentic Kubernetes
 
 **Module:** 9

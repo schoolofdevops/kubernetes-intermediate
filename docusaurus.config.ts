@@ -13,14 +13,14 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'http://kubernetes-intermediate.schoolofdevops.com',
+  url: 'https://301.schoolofdevops.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For custom domain, baseUrl should be '/'
   baseUrl: '/',
 
   // GitHub pages deployment config
   organizationName: 'schoolofdevops',
-  projectName: 'kubernetes-intermediate',
+  projectName: '301-kubeadv',
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
@@ -48,7 +48,7 @@ const config: Config = {
           routeBasePath: '/', // Serve docs at site root (docs-only mode)
           sidebarPath: './sidebars.ts',
           editUrl:
-            'https://github.com/schoolofdevops/kubernetes-intermediate/tree/main/',
+            'https://github.com/schoolofdevops/301-kubeadv/tree/main/',
           showLastUpdateTime: true,
           showLastUpdateAuthor: true,
         },
@@ -101,7 +101,7 @@ const config: Config = {
           label: 'Course',
         },
         {
-          href: 'https://github.com/schoolofdevops/kubernetes-intermediate',
+          href: 'https://github.com/schoolofdevops/301-kubeadv',
           label: 'GitHub',
           position: 'right',
         },
@@ -128,7 +128,7 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/schoolofdevops/kubernetes-intermediate',
+              href: 'https://github.com/schoolofdevops/301-kubeadv',
             },
           ],
         },

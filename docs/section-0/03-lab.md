@@ -77,6 +77,13 @@ A multi-node cluster is essential for this course. Many intermediate concepts li
 
 **Step 1: Create the cluster using the provided configuration**
 
+Clone the repo 
+
+```
+git clone https://github.com/sfd301/instavote.git
+cd instavote 
+```
+
 ```bash
 kind create cluster --config examples/kind-cluster.yaml --name voting-app
 ```
